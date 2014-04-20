@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>AI's bazaar</title><link href="/" rel="alternate"></link><link href="/feeds/machine-learning.atom.xml" rel="self"></link><id>/</id><updated>2014-04-20T10:20:00+08:00</updated><entry><title>My super title</title><link href="/my-super-post.html" rel="alternate"></link><updated>2014-04-20T10:20:00+08:00</updated><author><name>Webdancer</name></author><id>tag:,2014-04-20:my-super-post.html</id><summary type="html">&lt;h3&gt;什么是机器学习(machine learning)？&lt;/h3&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>AI's bazaar</title><link href="/" rel="alternate"></link><link href="/feeds/machine-learning.atom.xml" rel="self"></link><id>/</id><updated>2014-04-20T10:20:00+08:00</updated><entry><title>机器学习简介</title><link href="/my-super-post.html" rel="alternate"></link><updated>2014-04-20T10:20:00+08:00</updated><author><name>Webdancer</name></author><id>tag:,2014-04-20:my-super-post.html</id><summary type="html">&lt;h3&gt;什么是机器学习(machine learning)？&lt;/h3&gt;
 &lt;p&gt;这本书我们讨论的是关于“机器学习”相关的知识，那么什么是机器学习？回答这个问题可以从它的目的角度来回答，机器学习主要的目的在于构建可以根据过往的经验自动学习以
 提高自身性能的计算机系统，以及了解自动学习背后的规律。其中广泛引用的是Tom Mitchell 给出的定义：&lt;/p&gt;
 &lt;blockquote&gt;
@@ -7,15 +7,14 @@
 &lt;/blockquote&gt;
 &lt;p&gt;看以看出，该定义的描述中，涉及到三个基本方面：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;任务T。我们要处理的是一个什么样的任务，是无人车问题，语言识别，还是人脸识别；
-*
-性能标准P。我们使用什么样的标准来说明我们设计的系统的好坏，这对我们后面设计学习的目标函数时候有指导作用，我们根据标准P来设计和调整模型，满足我们的任务要求。&lt;/li&gt;
+&lt;li&gt;任务T。我们要处理的是一个什么样的任务，是无人车问题，语言识别，还是人脸识别;&lt;/li&gt;
+&lt;li&gt;性能标准P。我们使用什么样的标准来说明我们设计的系统的好坏，这对我们后面设计学习的目标函数时候有指导作用，我们根据标准P来设计和调整模型，满足我们的任务要求。&lt;/li&gt;
 &lt;li&gt;训练经验E。从那里获取训练经验可能对我们系统学习有直接的影响。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;简言之，机器学习主要是设计和分析使计算机能够“学习”的模型、算法，这些模型、算法能从经验数据集中发现规律，并根据规律对未知数据做预测。机器学习可以用于数据分析，
 从中挖掘出有价值的东西，现在我们生活在一个“大数据”的时代，而机器学习的性质决定了它能很好的应用在大数据上，这也正是它流行的原因。在本书中，考虑的是基于&lt;strong&gt;模型
 &lt;/strong&gt;的机器学习方法，不同的模型对应着不同的假设，反映了人们对于数据中所蕴含的模式的认识。一个典型的机器学习系统的流程如图：&lt;/p&gt;
-&lt;p&gt;&lt;img src="../files/imgs/1-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/home/xinchao/seaslee.github.io/content/images/1-1.png"&gt;&lt;/p&gt;
 &lt;p&gt;根据已有的经验数据，我们不断的训练假设的模型，当模型训练完成以后，可以用它来对未知的新数据做出判断。本书讨论的范围局限在对不同的模型的考虑，在应用机器学习模型到
 不同的问题时，数据一般都需要进行相应的处理，比如预处理，特征提取等，数据的特征提取过程对于机器学习的性能有很大的影响，但是内容太广泛，技巧太多，只能涉及到其中的
 很少一部分。&lt;/p&gt;
@@ -122,7 +121,7 @@ $$&lt;/p&gt;
 &lt;p&gt;这种求解方法，称为最大后验估计(Maximum Posterior Estimate, MAP)，其中， $p$ 为数据服从的分布。&lt;/p&gt;
 &lt;p&gt;分类问题又称为模式识别(pattern recognition)，在第一节中所举的鸢尾花品种识别就是一个典型的分类问题，这里涉及到三个类别，每个实例只能属于其中
 一个类别，按照我们前面的论述，该问题属于多类问题。其处理流程大致如图所示:&lt;/p&gt;
-&lt;p&gt;&lt;img src="../files/imgs/1-3.png", height=300pt, width=400pt&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/home/xinchao/seaslee.github.io/content/images/1-3.png", height=300pt, width=400pt&gt;&lt;/p&gt;
 &lt;p&gt;上面的流程也是大多数监督学习算法的流程，在其中最重要，也是最困难的的两个地方就是：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;建模。选择合适的模型，设计好要优化的目标函数。有时候可能问题的定义导致不能显式的写出一个优化目标函数。&lt;/li&gt;
@@ -165,7 +164,7 @@ defined)问题。根据不同的问题，我们可以有不同的定义，从而
 $1$ 秒学习 $10^5$ 比特的信息。而且你只能从输入本身得到这么多的信息，从其他地方根本无法得到。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;根据上面的论述，可以用下面的框图3表示机器学习的分类：&lt;/p&gt;
-&lt;p&gt;&lt;img src="../files/imgs/1-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="/home/xinchao/seaslee.github.io/content/images/1-2.png"&gt;&lt;/p&gt;
 &lt;p&gt;这只是一个简单的框架，它省略了很多机器学习的重要部分，比如按照分类器分类能力的强弱会有强弱分类器，可以集成多个弱分类器进行集成学习(ensemble
 learning)，可以使用标记数据和没有标记数据的半间督学习，对于多标记的输出，我们可以考虑输出的结构(structure prediction)等。&lt;/p&gt;
 &lt;h3&gt;数据&lt;/h3&gt;
@@ -263,7 +262,7 @@ $e=f^{\frac{1}{D}}$ 。比如，要包含十分之一的数据，即 $f=10$ ，�
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="png" src="a_files/a_1_0.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="png" src="/home/xinchao/seaslee.github.io/content/images/a_1_0.png" /&gt;&lt;/p&gt;
 &lt;p&gt;从图中可以看出：即使在比例比较小的情况下，当维度很高的时候，超立方体的边长都很大，这样只有小部分数据点离测试点较近，大多数数据点都在离要测试的数据较远的一个狭长
 区域。这也就说明在高维空间中，训练数据会变得比较稀疏，为了支持需要的结果，数据集可能需要指数型的增长，这样在低维空间中的直观想法，可能由于维度灾难的出现，而不能
 直接在高维空间中直接的使用。&lt;/p&gt;
@@ -338,17 +337,6 @@ flod，LOO，LPO等。下面的例子中，使用网格法来确定模型的超�
 &lt;p&gt;[3] Pattern Recognition and Machine Learning, Christopher M. Bishop, 2006&lt;/p&gt;
 &lt;p&gt;[4] Scikit-learn: &lt;a href="http://scikit-
 learn.org/stable/index.html"&gt;http://scikit-learn.org/stable/index.html&lt;/a&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;IPython&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;core&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;display&lt;/span&gt; &lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;HTML&lt;/span&gt;
-&lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;css_styling&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-    &lt;span class="n"&gt;styles&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;../styles/custom.css&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;r&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;HTML&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;styles&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;json&lt;/span&gt;
-&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;load&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;../styles/bmh_matplotlibrc.json&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="n"&gt;matplotlib&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rcParams&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;update&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="n"&gt;css_styling&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
 &lt;style&gt;
     @font-face {
         font-family: "Computer Modern";
