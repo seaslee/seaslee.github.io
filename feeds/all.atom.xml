@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>AI's bazaar</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2014-04-20T10:20:00+08:00</updated><entry><title>机器学习简介</title><link href="/posts/2014/04/my-super-post/" rel="alternate"></link><updated>2014-04-20T10:20:00+08:00</updated><author><name>Webdancer</name></author><id>tag:,2014-04-20:posts/2014/04/my-super-post/</id><summary type="html">&lt;h3&gt;什么是机器学习(machine learning)？&lt;/h3&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>AI's bazaar</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2014-04-20T10:20:00+08:00</updated><entry><title>机器学习简介</title><link href="/posts/2014/04/ml_introduce/" rel="alternate"></link><updated>2014-04-20T10:20:00+08:00</updated><author><name>Webdancer</name></author><id>tag:,2014-04-20:posts/2014/04/ml_introduce/</id><summary type="html">&lt;h3&gt;什么是机器学习(machine learning)？&lt;/h3&gt;
 &lt;p&gt;这本书我们讨论的是关于“机器学习”相关的知识，那么什么是机器学习？回答这个问题可以从它的目的角度来回答，机器学习主要的目的在于构建可以根据过往的经验自动学习以
 提高自身性能的计算机系统，以及了解自动学习背后的规律。其中广泛引用的是Tom Mitchell 给出的定义：&lt;/p&gt;
 &lt;blockquote&gt;
@@ -433,4 +433,4 @@ learn.org/stable/index.html"&gt;http://scikit-learn.org/stable/index.html&lt;/a&
                     styles: {'.MathJax_Display': {"margin": 4}}
                 }
         });
-&lt;/script&gt;</summary><category term="Machinelearning"></category></entry></feed>
+&lt;/script&gt;</summary><category term="Machine Learning"></category></entry></feed>
