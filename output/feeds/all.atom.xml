@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>AI's bazaar</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2014-04-20T10:20:00+08:00</updated><entry><title>机器学习简介</title><link href="/posts/2014/04/ml_introduce/" rel="alternate"></link><updated>2014-04-20T10:20:00+08:00</updated><author><name>Webdancer</name></author><id>tag:,2014-04-20:posts/2014/04/ml_introduce/</id><summary type="html">&lt;h3&gt;什么是机器学习(machine learning)？&lt;/h3&gt;
-&lt;p&gt;这本书我们讨论的是关于“机器学习”相关的知识，那么什么是机器学习？回答这个问题可以从它的目的角度来回答，机器学习主要的目的在于构建可以根据过往的经验自动学习以
+&lt;p&gt;这本书我们讨论的是关于“机器学习”相关的知识，那么什么是机器学习？从目的的角度来说，机器学习主要的目的在于构建可以根据过往的经验自动学习以
 提高自身性能的计算机系统，以及了解自动学习背后的规律。其中广泛引用的是Tom Mitchell 给出的定义：&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;对于某类任务T和性能度量P，如果一个计算机程序在任务T上，以P度量的性能随着经验E而不断改善，那么我们称这个计算机程序在从经验E中学习。&lt;/p&gt;
@@ -336,88 +336,6 @@ flod，LOO，LPO等。下面的例子中，使用网格法来确定模型的超�
 &lt;p&gt;[3] Pattern Recognition and Machine Learning, Christopher M. Bishop, 2006&lt;/p&gt;
 &lt;p&gt;[4] Scikit-learn: &lt;a href="http://scikit-
 learn.org/stable/index.html"&gt;http://scikit-learn.org/stable/index.html&lt;/a&gt;&lt;/p&gt;
-&lt;style&gt;
-    @font-face {
-        font-family: "Computer Modern";
-        src: url('http://9dbb143991406a7c655e-aa5fcb0a5a4ec34cff238a2d56ca4144.r56.cf5.rackcdn.com/cmunss.otf');
-    }
-    @font-face {
-        font-family: "Computer Modern";
-        font-weight: bold;
-        src: url('http://9dbb143991406a7c655e-aa5fcb0a5a4ec34cff238a2d56ca4144.r56.cf5.rackcdn.com/cmunsx.otf');
-    }
-    @font-face {
-        font-family: "Computer Modern";
-        font-style: oblique;
-        src: url('http://9dbb143991406a7c655e-aa5fcb0a5a4ec34cff238a2d56ca4144.r56.cf5.rackcdn.com/cmunsi.otf');
-    }
-    @font-face {
-        font-family: "Computer Modern";
-        font-weight: bold;
-        font-style: oblique;
-        src: url('http://9dbb143991406a7c655e-aa5fcb0a5a4ec34cff238a2d56ca4144.r56.cf5.rackcdn.com/cmunso.otf');
-    }
-    div.cell{
-        width:800px;
-        margin-left:16% !important;
-        margin-right:auto;
-    }
-    h1 {
-        font-family: Helvetica, serif;
-    }
-    h4{
-        margin-top:12px;
-        margin-bottom: 3px;
-       }
-    h5{
-        margin-top:11px;
-        margin-bottom: 3px;
-       }
-    div.text_cell_render{
-        font-family: Computer Modern, "Helvetica Neue", Arial, Helvetica, "Microsoft YaHei", Geneva, sans-serif;
-        line-height: 145%;
-        font-size: 108%;
-        width:800px;
-        margin-left:auto;
-        margin-right:auto;
-    }
-    .CodeMirror{
-            font-family: "Source Code Pro", source-code-pro,Consolas, monospace;
-    }
-    .prompt{
-        display: None;
-    }
-
-    .rendered_html blockquote {
-        margin: 1em 2em;
-    }
-    blockquote {
-    padding: 0 0 0 15px;
-    margin: 0 0 20px;
-    border-left: 5px solid #eee;
-    }
-   blockquote {
-    display: block;
-    -webkit-margin-before: 1em;
-    -webkit-margin-after: 1em;
-    -webkit-margin-start: 40px;
-    -webkit-margin-end: 40px;
-    }
-/*    .text_cell_render h5 {
-        font-weight: 300;
-        font-size: 10pt;
-        color: #4057A1;
-        font-style: italic;
-        margin-bottom: .5em;
-        margin-top: 0.5em;
-        display: block;
-    }*/
-
-    .warning{
-        color: rgb( 240, 20, 20 )
-        }  
-&lt;/style&gt;
-
 &lt;script&gt;
     MathJax.Hub.Config({
                         TeX: {

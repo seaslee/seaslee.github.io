@@ -3,8 +3,7 @@
 <head>
         <meta charset="utf-8" />
         <title>AI's bazaar</title>
-        <link rel="stylesheet" href="/theme/css/main.css" />
-        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="AI's bazaar Atom Feed" />
+        <link rel="stylesheet" href="./theme/css/main.css" />
 
         <!--[if IE]>
             <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -13,27 +12,27 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="/">AI's bazaar </a></h1>
+                <h1><a href="./">AI's bazaar </a></h1>
                 <nav><ul>
-                    <li><a href="/category/machine-learning">Machine Learning</a></li>
+                    <li><a href="./category/machine-learning">Machine Learning</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="/posts/2014/04/ml_introduce/">机器学习简介</a></h1>
+                    <h1 class="entry-title"><a href="./posts/2014/04/ml_introduce/">机器学习简介</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2014-04-20T10:20:00">
                 日 20 四月 2014
         </abbr>
 
         <address class="vcard author">
-                By <a class="url fn" href="/author/webdancer.html">Webdancer</a>
+                By <a class="url fn" href="./author/webdancer.html">Webdancer</a>
         </address>
-<p>In <a href="/category/machine-learning">Machine Learning</a>. </p>
-<p>tags: <a href="/tag/machine-learning/">Machine Learning</a></p>
+<p>In <a href="./category/machine-learning">Machine Learning</a>. </p>
+<p>tags: <a href="./tag/machine-learning/">Machine Learning</a></p>
 </footer><!-- /.post-info --><h3>什么是机器学习(machine learning)？</h3>
-<p>这本书我们讨论的是关于“机器学习”相关的知识，那么什么是机器学习？回答这个问题可以从它的目的角度来回答，机器学习主要的目的在于构建可以根据过往的经验自动学习以
+<p>这本书我们讨论的是关于“机器学习”相关的知识，那么什么是机器学习？从目的的角度来说，机器学习主要的目的在于构建可以根据过往的经验自动学习以
 提高自身性能的计算机系统，以及了解自动学习背后的规律。其中广泛引用的是Tom Mitchell 给出的定义：</p>
 <blockquote>
 <p>对于某类任务T和性能度量P，如果一个计算机程序在任务T上，以P度量的性能随着经验E而不断改善，那么我们称这个计算机程序在从经验E中学习。</p>
@@ -43,7 +42,7 @@
 <li>任务T。我们要处理的是一个什么样的任务，是无人车问题，语言识别，还是人脸识别;</li>
 <li>性能标准P。我们使用什么样的标准来说明我们设计的系统的好坏，这对我们后面设计学习的目标函数时候有指导作用，我们根据标准P来设计和调整模型，满足我们的任务要求。</li>
 <li>训练经验E。从那里获取训练经验可能对我们系统学习有直接的影响。
-<!-- PELICAN_END_SUMMARY --></li>
+</li>
 </ul>
 <p>简言之，机器学习主要是设计和分析使计算机能够“学习”的模型、算法，这些模型、算法能从经验数据集中发现规律，并根据规律对未知数据做预测。机器学习可以用于数据分析，
 从中挖掘出有价值的东西，现在我们生活在一个“大数据”的时代，而机器学习的性质决定了它能很好的应用在大数据上，这也正是它流行的原因。在本书中，考虑的是基于<strong>模型
@@ -369,88 +368,6 @@ flod，LOO，LPO等。下面的例子中，使用网格法来确定模型的超�
 <p>[3] Pattern Recognition and Machine Learning, Christopher M. Bishop, 2006</p>
 <p>[4] Scikit-learn: <a href="http://scikit-
 learn.org/stable/index.html">http://scikit-learn.org/stable/index.html</a></p>
-<style>
-    @font-face {
-        font-family: "Computer Modern";
-        src: url('http://9dbb143991406a7c655e-aa5fcb0a5a4ec34cff238a2d56ca4144.r56.cf5.rackcdn.com/cmunss.otf');
-    }
-    @font-face {
-        font-family: "Computer Modern";
-        font-weight: bold;
-        src: url('http://9dbb143991406a7c655e-aa5fcb0a5a4ec34cff238a2d56ca4144.r56.cf5.rackcdn.com/cmunsx.otf');
-    }
-    @font-face {
-        font-family: "Computer Modern";
-        font-style: oblique;
-        src: url('http://9dbb143991406a7c655e-aa5fcb0a5a4ec34cff238a2d56ca4144.r56.cf5.rackcdn.com/cmunsi.otf');
-    }
-    @font-face {
-        font-family: "Computer Modern";
-        font-weight: bold;
-        font-style: oblique;
-        src: url('http://9dbb143991406a7c655e-aa5fcb0a5a4ec34cff238a2d56ca4144.r56.cf5.rackcdn.com/cmunso.otf');
-    }
-    div.cell{
-        width:800px;
-        margin-left:16% !important;
-        margin-right:auto;
-    }
-    h1 {
-        font-family: Helvetica, serif;
-    }
-    h4{
-        margin-top:12px;
-        margin-bottom: 3px;
-       }
-    h5{
-        margin-top:11px;
-        margin-bottom: 3px;
-       }
-    div.text_cell_render{
-        font-family: Computer Modern, "Helvetica Neue", Arial, Helvetica, "Microsoft YaHei", Geneva, sans-serif;
-        line-height: 145%;
-        font-size: 108%;
-        width:800px;
-        margin-left:auto;
-        margin-right:auto;
-    }
-    .CodeMirror{
-            font-family: "Source Code Pro", source-code-pro,Consolas, monospace;
-    }
-    .prompt{
-        display: None;
-    }
-
-    .rendered_html blockquote {
-        margin: 1em 2em;
-    }
-    blockquote {
-    padding: 0 0 0 15px;
-    margin: 0 0 20px;
-    border-left: 5px solid #eee;
-    }
-   blockquote {
-    display: block;
-    -webkit-margin-before: 1em;
-    -webkit-margin-after: 1em;
-    -webkit-margin-start: 40px;
-    -webkit-margin-end: 40px;
-    }
-/*    .text_cell_render h5 {
-        font-weight: 300;
-        font-size: 10pt;
-        color: #4057A1;
-        font-style: italic;
-        margin-bottom: .5em;
-        margin-top: 0.5em;
-        display: block;
-    }*/
-
-    .warning{
-        color: rgb( 240, 20, 20 )
-        }  
-</style>
-
 <script>
     MathJax.Hub.Config({
                         TeX: {
@@ -495,7 +412,7 @@ learn.org/stable/index.html">http://scikit-learn.org/stable/index.html</a></p>
         (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
     }
 </script>
-<p>There are <a href="/posts/2014/04/ml_introduce/#disqus_thread">comments</a>.</p>                </article>
+<p>There are <a href="./posts/2014/04/ml_introduce/#disqus_thread">comments</a>.</p>                </article>
 <p class="paginator">
     Page 1 / 1
 </p>
@@ -512,7 +429,6 @@ learn.org/stable/index.html">http://scikit-learn.org/stable/index.html</a></p>
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://twitter.com/seaslee">Twitter</a></li>
                             <li><a href="http://github.com/seaslee">Github</a></li>
