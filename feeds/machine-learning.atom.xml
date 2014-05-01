@@ -365,4 +365,660 @@ learn.org/stable/index.html"&gt;http://scikit-learn.org/stable/index.html&lt;/a&
         (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
     }
 &lt;/script&gt;
+</summary><category term="Machine Learning"></category></entry><entry><title>概率知识简介</title><link href="/posts/2014/04/pr_introduce/" rel="alternate"></link><updated>2014-04-20T10:20:00+08:00</updated><author><name>Webdancer</name></author><id>tag:,2014-04-20:posts/2014/04/pr_introduce/</id><summary type="html">&lt;p&gt;机器学习中，遇到的一个很关键的问题就是不确定性，可能不同的人对事物不确性的理解存在不同。对于不确性有两类认识：1)事物本身就是不确定性的，所以其背后的规律也就是
+不确定性的；2)事物本身是确定的，但由于人类认识的限制，所以需要用不确定的规律。典型的例子就是“量子”，波尔认为量子规律本身就是不确定的，而爱因斯坦则认为量子是
+确定的，量子的不确定性是人类认识的限制。概率论为解决不确定性问题提供了一个系统的框架
+，因此概率是机器学习问题中需要掌握的基础知识。机器学习可以分为了两个阶段，第一个阶段是推理(inference),
+得到相关的概率；第二阶段根据推理阶段得到的概率，使用决策论知识做出最优的决策。本章论述概率论的基本知识。&lt;/p&gt;
+&lt;h3&gt;概率&lt;/h3&gt;
+&lt;p&gt;概率论就是研究不确定现象的数学。举一个例子，做投掷一个色子的随机试验，每次试验点数可能为$1,2,3,4,5,6$，随机试验的结果，称为随机变量(random
+variable)，记作$X$，简单的说，随机变量就是可能样本输出空间的一个函数。随机变量的取值范围称为样本空间(sample space),记作$\Omega
+$，在这个例子中，$\Omega=\{1,2,3,4,5,6\}$，样本空间的子集$A$称为事件(event)，比如出现点数为偶数。概率是对随机事件发生可能
+性的度量，满足一定的条件。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;概率的定义如下：如果一个函数$p:S\to\mathbb{R}, A\to
+p(A)$指定给每一个事件空间$\Omega$中的事件$A$一个实数$P(A)$,满足以下三条公理:
+ \begin{eqnarray}
+  \nonumber 0 &amp;lt;= p(A) &amp;lt;= 1; \\
+  \nonumber  P(S) = 1 ; \\
+   P(A \cup B) = P(A) + P(B),if P(A\cap B)=0.
+   \label{pro}
+\end{eqnarray}
+那么函数$P$叫做概率函数，相应的$P(A)$就是事件$A$的概率。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;随机变量与其他的数学变量不同，它的取值不是确定的，有多种可能，比如普通的变量，在下一个取值只能是确定的。注意随机变量和随机变量取值的区别，在上面的投掷色子的例子
+中，$X$是随机变量，包含可能所有的试验结果，随机变量的某个取值可能为$1,2,3,4,5,6$中的任何一个，记作$x$，比如随机变量取$x$的概率可以记作$p
+(X=x)$。在下面的例子中，为了表示的简单，$p(X)$表示随机变量的分布，$p(x)$表示随机变量分布在某个特定点的值。
+根据样本空间的类型，随机变量有离散的和连续的两种基本类型。样本空间如果是有限的或是无限可数的，则称该随机变量为离散型随机变量，否则称为连续型随机变量。&lt;/p&gt;
+&lt;p&gt;下面这三个定理是进行概率运算的基石，对我们以后的概率分析有非常重要的作用。概率推断就是根据下面定律进行算术运算。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;加法定理：
+  \begin{equation}\label{sum_rule}
+    p(X)=\sum_Yp(X,Y);
+  \end{equation}&lt;/li&gt;
+&lt;li&gt;乘法定律：
+   \begin{equation}\label{product_rule}
+     p(X,Y)=p(X)p(Y|X);
+   \end{equation}
+在上面的两个定理中，$p(X,Y)$是$X,Y$同时发生的联合概率，$p(Y|X)$是给出$X$条件下，$Y$的条件概率，$p(X)$是$X$的边缘概率。两个定
+理比较好理解，加法定理告诉我们求一个随机变量的边缘概率，只要对其他的所有随机变量的可能取值求和（或是积分）便可；乘法是一个链式法则，两个变量同时发生的概率，可以
+等于一个变量的概率与在该变量给出条件下另一个变量条件概率的乘机。两个定理都可以拓展到三个以及三个变量以上的情况：
+\begin{equation}\label{ext_sum_rule}
+  p(X_1)=\sum_{X_2,..,X_n}p(X_1,X_2,..,X_n);
+\end{equation}
+\begin{equation}\label{ext_prod_rule}
+  p(X_1,X_2,..,X_n)=p(X_1)p(X_2|X_1)p(X_3|X_1,X_2)...p(X_n|X_1,X_2,...,X_{n-1});
+\end{equation}&lt;/li&gt;
+&lt;li&gt;贝叶斯定理:
+  \begin{equation}\label{bayes}
+     p(H|E)=\frac{p(H)p(E|H)}{p(E)}
+  \end{equation}
+其中$p(H|E)$表示在$E$发生情况下，$H$发生的概率，是一个条件概率。对概率的论述，主要集中在频率主义的角度，概率就是频率的极限，而贝叶斯主义则对概率的
+理解不同。贝叶斯主义者和频率主义者对这个定理有不同的解释，在贝叶斯主义者看来，概率代表的是信任度，贝叶斯定理解释了在一个命题中，在考虑了证据后对信任度的影响；而
+频率主义者看来，概率代表了事件发生的个数与事件空间总的数目的比值，贝叶斯定理描述了特定事件概率值之间的关系。在贝叶斯解释中，$p(H)$
+表示的是先验概率(prior)，$H$初始的信任度;$p(E|H)$表示似然函数，$p(H|E)$ 表示的是后验概率(poster)，考虑了$E$
+后的信任度；$p(E)$ 表示边缘似然，或是称为模型置信度；这个因子对于所有假设都是一样的，可以不用考虑。$p(H)$表示的是先验概率(prior)，
+$p(E|H)$ 表示似然(likelihood)，$p(H|E)$ 表示的是后验概率(poster)。根据上面的贝叶斯定理，在贝叶斯推断中，可以根据先验概率和
+似然函数，求出后验概率；得出后验概率可以作为下面继续推断的先验概率。由于在实际的使用中，$E$
+的概率对于我们的模型没有影响，我们可以省略掉，所以贝叶斯定理也可以表示为：$posterior \propto likelihood \times prior
+$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;对于连续类型的随机变量，上面式子中的加号变为积分符号即可，不影响式子的意义。在三个定理中，涉及到了三种不同类型的概率：联合概率$p(X,Y)$，边缘概率$p(X
+)$和条件概率$p(X|Y)$。这里假设只有两个随机变量，多个随机变量的情况类似的表示。可以看出这三种分布讨论的是随机变量之间的关系，是机器学习建模最常用的工具
+。一般按照变量之间以来的关系，变量之间的关系可以分为：独立(independent)和条件独立(conditional independent)。 随机变量独立
+，指的是变量之间没有任何的关系，一个变量的概率大小对另一个变量没有任何影响。随机变量条件独立，关于条件独立的内容在后面的概率图模型中会详细论述，概率图模型是描述
+随机变量之间的条件独立关系最常用到工具。指的是给定一个随机变量的情况下，两个变量之间没有任何影响。形式化如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;独立(independent )：
+\begin{equation}\label{independent}
+  p(X,Y)=p(X)p(Y)
+\end{equation}&lt;/li&gt;
+&lt;li&gt;条件独立(conditional independent)：
+  \begin{equation}\label{cond_independent}
+    p(X,Y|Z)=p(X|Z)p(Y|Z)
+  \end{equation}&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;概率分布&lt;/h3&gt;
+&lt;p&gt;了解概率的基本知识以后，下面看一下概率分布的知识。随机变量有两种：离散型和连续型，所以概率分布也有两种基本类型，离散概率分布和连续概率分布。概率质量函数(pro
+bability mass function, PMF)用来描述离散分布；而概率密度函数(probability density function,
+PDF)用来描述连续分布；两者非常的不同，在$PMF$中，每个变量$X$的$PMF(X)$都对应一个概率值，即$X$取某个值时的概率；在$PDF$
+中，每个变量的对应取值不是概率，只有通过积分，才能得到概率。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果随机变量是离散的，即样本空间$\Omega$是有限的或是无限可数的，$X$的概率质量函数(probability mass function,
+PMF)$p$ 满足下面的条件：
+  $$p(x) \geq 0;$$
+  $$\sum_{x\in \Omega} p(x)=1.$$&lt;/p&gt;
+&lt;p&gt;如果随机变量$X \in \mathbb{R}$，对于任意的$a,b \in \mathbb{R}$，$X$的概率密度函数(probability
+density function, PDF)$f$满足下面的条件：
+  $$f(x) \geq 0;$$
+  $$\int_{x\in \Omega} f(x)=1.$$&lt;/p&gt;
+&lt;p&gt;如果随机变量$X \in \mathbb{R}$，$X$的累计分布函数(cumulative distribution function,
+CDF)$F$满足下面的条件：
+$$F(x) = \int_{-\infty}^x f(x)dx$$&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;对于离散分布，可以通过枚举的方式列出概率分布。比如投掷一个硬币，正面朝上，反面朝上的概率相等，都为$\frac{1}{2}$，即$p(X=0)=p(X=1)=\
+frac{1}{2}$。&lt;/p&gt;
+&lt;h3&gt;期望与方差&lt;/h3&gt;
+&lt;p&gt;期望是分布函数的一个重要内容，也是涉及到概率时的一个重要操作：对函数求一个加权的均值。对于离散随机变量与连续的随机变量来说，期望求法不同，离散分布如下：
+\begin{equation}\label{discrete_expect}
+  \mathbb{E}(f)=\sum_{x\in var(X)}p(x)f(x)
+\end{equation}
+上面的式子的意义就是在函数每个取值求一个加权的均值，而权值是该点的概率。
+对于连续分布，期望如下：
+\begin{equation}\label{continous_expect}
+  \mathbb{E}(f)=\int_{x\in var(X)}p(x)f(x)
+\end{equation}
+对于上面两种情况，如果我们从分布函数或是密度函数进行采样，得到$N$个样本${x_1,x_2,...,x_N}$，则期望的计算可以近似为：
+\begin{equation}\label{approx_expect}
+  \mathbb{E}(f)=\frac{1}{N}\sum_{i=1}^{N}f(x_i)
+\end{equation}&lt;/p&gt;
+&lt;p&gt;方差反映了函数在其均值附近的差异性，定义如下：&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{var}
+  Var(f)=\mathbb E ((f(x)-\mathbb E(f))^2)
+\end{equation}
+方差也可以表示如下：
+\begin{equation}\label{var1}
+  Var(f)=\mathbb E({f}^2(x))- \mathbb E(f)^2
+\end{equation}&lt;/p&gt;
+&lt;h3&gt;常见离散分布&lt;/h3&gt;
+&lt;p&gt;本节给出一些常见的连续分布。&lt;/p&gt;
+&lt;h4&gt;伯努利分布(Bernoulli distribution)}&lt;/h4&gt;
+&lt;p&gt;在投1次硬币的随机试验中，定义随机变量$X$为正面朝上的次数，则样本空间为${0,1}$，设正面朝上的概率$p(X=1|\mu)=\mu$，则$
+P(X=0)=1-P(X=1)$，则出现$X=m$次正面朝上的分布可以写成：&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{bern}
+ p(x|\mu)=\mu^x(1-\mu)^{(1-x)}
+\end{equation}&lt;/p&gt;
+&lt;p&gt;称$X$服从参数为$\mu$的伯努利分布(Bernoulli distribution)，记作$X\sim
+Bern(\mu)$，其中$\mu$为一次试验中正面朝上的概率。其均值和方差的公式：&lt;/p&gt;
+&lt;p&gt;\begin{equation}
+  \mathbb{E}(x) = \mu
+\end{equation}&lt;/p&gt;
+&lt;p&gt;\begin{equation}
+  var(x) = \mu(1-\mu)
+\end{equation}&lt;/p&gt;
+&lt;h4&gt;二项分布(binomial distribution)&lt;/h4&gt;
+&lt;p&gt;在一个投$N$次硬币的随机试验中，定义随机变量$X$为正面朝上的次数，则样本空间为${0,1,2,3,...,N}$，则出现$X=m$次正面朝上的分布可以写
+成：&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{bin}
+  p(m|N,\mu)=\left(
+               \begin{array}{c}
+                 N \\
+                 m \\
+               \end{array}
+             \right)\mu^m(1-\mu)^{N-m}
+\end{equation}&lt;/p&gt;
+&lt;p&gt;称$X$服从参数为$N,\mu$的二项分布(binomial distribution)，记作$X\sim
+Bin(N,\mu)$，其中$\mu$为一次试验中正面朝上的概率，&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{combinations}
+  \left(
+               \begin{array}{c}
+                 N \\
+                 m \\
+               \end{array}
+             \right)=\frac{N!}{(N-m)!m!}
+\end{equation}
+是从$N$个硬币中选择$m$个正面朝上的组合方式。其均值和方差的公式：&lt;/p&gt;
+&lt;p&gt;\begin{equation}
+  \mathbb{E}(m) = N\mu
+\end{equation}&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label
+  var(m) = N\mu(1-\mu)
+\end{equation}&lt;/p&gt;
+&lt;p&gt;可以看出伯努利分布是二项分布$N=1$时的一个特例。下面看一下当$N=10$，而$\mu$分别取0.25,0.5,0.75的例子。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;scipy&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stats&lt;/span&gt; &lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;binom&lt;/span&gt;
+&lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;matplotlib&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pyplot&lt;/span&gt; &lt;span class="n"&gt;as&lt;/span&gt; &lt;span class="n"&gt;plt&lt;/span&gt;
+&lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;IPython&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;core&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pylabtools&lt;/span&gt; &lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;figsize&lt;/span&gt;
+
+
+&lt;span class="n"&gt;figsize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;
+&lt;span class="n"&gt;p_s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mf"&gt;0.25&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.75&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;in&lt;/span&gt; &lt;span class="n"&gt;enumerate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;p_s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;subplot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;p_s&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xlabel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sc"&gt;&amp;#39;m&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;$\&lt;/span&gt;&lt;span class="n"&gt;mu&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="mf"&gt;0.2f&lt;/span&gt;&lt;span class="err"&gt;$&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;rvx&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;binom&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rvs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1000000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;hist&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rvx&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;bins&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;normed&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;color&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;blue&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="/images/b_1_0.png" /&gt;&lt;/p&gt;
+&lt;p&gt;从上图显示的情况，可以很清楚的看出：在参数$\mu$较小的时候，硬币朝上出现的次数较少，在$\mu=0.25$时时左偏的，但是虽然$\mu$增大，则硬币朝上出现
+的次数则在增加。&lt;/p&gt;
+&lt;h4&gt;类别分布(Category distribution)&lt;/h4&gt;
+&lt;p&gt;伯努利分布可以很好的刻画像投掷一次硬币这样有两个结果的随机试验，但是对于投掷色子这样的试验，结果不是二值的，所以不能用伯努利分布来刻画。可以将有两种互斥的状态的
+伯努利分布扩展成有$K$种互斥的状态的类别分布。例如，在投掷色子的试验中有$6$
+种互斥的状态${1,2,...,6}$。为了表示时方便，可以对随机变量如下编码：用$K$维的向量表示随机变量的取值，当第$k$
+个时间发生时，向量的第$k$位为$1$，其他位为$0$。这种编码方式称为1-of-K(也称1-of-shot)编码。例如，在$K=6$ 时，样本空间为$\Ome
+ga={1,2,...,6}$，现在表示为$\Omega={(1,0,0,0,0,0),(0,1,0,0,0,0),...,(0,0,0,0,0,1)}
+$。概率表示相应的可以表示为：$p(X=1)=p(X=\mathbf{x})=p(X=(1,0,0,0,0,0))$。在进行$1-of-K$编码后，则类别概率分
+布可以写成如下形式：
+\begin{equation}\label{cat_distribution}
+  p(\mathbf{x}|\mathrm{\mu})=\prod_{k=1}^K \mu_k^{x_k}
+\end{equation}
+称$X$服从参数为$\mu$的类别分布(category distribution)，记作$X\sim
+Cat(\mu)$，其中，参数$\mathrm{\mu}=(\mu_1,\mu_2,...,\mu_K)$ 为$K$
+种变量取值的概率，满足$\sum_k\mu_k=1$。&lt;/p&gt;
+&lt;h4&gt;多项分布(Multinomial distribution)&lt;/h4&gt;
+&lt;p&gt;可以像伯努利分布扩展到二项分布一样，可以将类别分布扩展到多项分布。在一个投$N$
+次色子的随机试验中，随机变量$X=(x_1,x_2,...,x_K)$，其中$x_i$为$i$面朝出现的次数，满足约束:$\sum_kx_k=N$，则出现$X$
+的分布可以写成:&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{multi_distribution}
+  p((x_1,x_2,...,x_K)|\mathrm{\mu},N)=\left(\begin{array}{c}
+                                            N \
+                                            x_1,x_2,...,x_K
+                                          \end{array}
+  \right)\prod_{k=1}^K \mu_k^{x_k}
+\end{equation}
+称$X=(x_1,x_2,...,x_K)$服从参数为$\mu$的多项分布(Multinomial distribution)，记作$X\sim
+Mult(\mu,N)$，其中，参数$\mathrm{\mu}=(\mu_1,\mu_2,...,\mu_K)$ 为$K$
+种变量取值的概率,且满足$\sum_k\mu_k=1$，
+\begin{equation}\label{multinomial coefficient}
+  \left(\begin{array}{c}
+                                            N \\
+                                            x_1,x_2,...,x_K
+                                          \end{array}
+  \right)=\frac{N!}{x_1!x_2!...x_K!}
+\end{equation}&lt;/p&gt;
+&lt;h4&gt;泊松分布(Poisson distribution)&lt;/h4&gt;
+&lt;p&gt;随机变量$X \in {0,1,2,3,...,}$，则$X$ 的泊松分布分布可以写成:&lt;/p&gt;
+&lt;p&gt;\begin{equation}
+  p(x|\lambda)= e^{-\lambda}\frac{\lambda^x}{x!}
+\end{equation}&lt;/p&gt;
+&lt;p&gt;记作$X\sim Poi(\mu,N)$。下面看一下$\lambda = 1,5,10$时，不同的泊松分布。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;scipy&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stats&lt;/span&gt; &lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;poisson&lt;/span&gt;
+&lt;span class="n"&gt;figsize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;lams&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lam&lt;/span&gt; &lt;span class="n"&gt;in&lt;/span&gt; &lt;span class="n"&gt;enumerate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lams&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;subplot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lams&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;vrx&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;poisson&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rvs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lam&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10000000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;$\&lt;/span&gt;&lt;span class="n"&gt;lambda&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="err"&gt;$&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;lam&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;hist&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vrx&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;normed&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;color&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;blue&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="/images/b_4_0.png" /&gt;&lt;/p&gt;
+&lt;h3&gt;常见连续分布&lt;/h3&gt;
+&lt;p&gt;本节给出一些常见的连续分布。&lt;/p&gt;
+&lt;h4&gt;均匀分布(Uniform distribution)&lt;/h4&gt;
+&lt;p&gt;连续型随机变量$X$的均匀分布的密度函数如下：
+\begin{equation}
+  p(x|a,b)=\left\{
+             \begin{array}{ll}
+               \frac{1}{b-a}, &amp;amp;  a \leq x \leq b ;  \\
+               0, &amp;amp; \hbox{otherwise.}
+             \end{array}
+           \right.
+\end{equation}
+记作$x \sim U(a,b)$。&lt;/p&gt;
+&lt;h4&gt;高斯分布(guassian distribution)&lt;/h4&gt;
+&lt;p&gt;高斯分布(guassian distribution)是也许是我们常见的一种分布形式，也是在机器学习中用的最多的一类分布。&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{guassian}
+  \mathcal
+N(x|\mu,\sigma^2)=\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+\end{equation}&lt;/p&gt;
+&lt;p&gt;其中，$\mu$是均值，$\sigma$是标准差(其中$\sigma^2$是方差)；$p(X=x)=\mathcal
+N(x|\mu,\sigma)$可以写成$x \sim \mathcal N(x|\mu,\sigma)$；其均值与方差为：&lt;/p&gt;
+&lt;p&gt;\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+  \mathbb{E}(x) &amp;amp;=&amp;amp; \mu \\
+  var(x) &amp;amp;=&amp;amp; \sigma^2
+\end{eqnarray}&lt;/p&gt;
+&lt;p&gt;当$\mu=0,\sigma=1$ 时，称为标准正态分布，也成为贝尔曲线(bell curve)。下面看一下$\mu,\sigma$分别取不同值时，高斯分布的情
+况。从图中可以看到$\mu$决定了高斯曲线的位置，而$\sigma$则对应了曲线的形状，$\sigma$越小，则曲线越“高瘦”，反之，则“低矮”。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;scipy&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stats&lt;/span&gt; &lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;norm&lt;/span&gt;
+&lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt; &lt;span class="n"&gt;as&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;
+
+&lt;span class="n"&gt;figsize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;mu_s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;sigma_s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;linspace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="n"&gt;in&lt;/span&gt; &lt;span class="n"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mu_s&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;in&lt;/span&gt; &lt;span class="n"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sigma_s&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;mu&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mu_s&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="n"&gt;sigma&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sigma_s&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;subplot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mu_s&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sigma_s&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;$\&lt;/span&gt;&lt;span class="n"&gt;sigma&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="mf"&gt;0.2f&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;$\&lt;/span&gt;&lt;span class="n"&gt;mu&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sigma&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;mu&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;plot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;norm&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pdf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;loc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;mu&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;scale&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;sigma&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="/images/b_6_0.png" /&gt;&lt;/p&gt;
+&lt;h4&gt;伽马分布(Gamma distribution)&lt;/h4&gt;
+&lt;p&gt;对于随机变量$X&amp;gt;0$，伽马分布如下：&lt;/p&gt;
+&lt;p&gt;\begin{equation}
+    p(\tau|a,b)=\frac{1}{\Gamma(a)} b^a\tau^{a-1}e^{-b\tau}
+\end{equation}&lt;/p&gt;
+&lt;p&gt;其中，参数$a,b$满足$a&amp;gt;0,b&amp;gt;0$，$\Gamma(x)$是伽马函数，定义如下：&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{gamma}
+   \Gamma(x) = \int_0^\infty u^{x-1}e^{-\mu}d\mu
+\end{equation}&lt;/p&gt;
+&lt;p&gt;其有一个很好的性质，$\Gamma(x+1)=x\Gamma(x)$。其均值与方差为：&lt;/p&gt;
+&lt;p&gt;\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+  \mathbb{E}(\tau) &amp;amp;=&amp;amp; \frac{a}{b} \\
+  var(\tau) &amp;amp;=&amp;amp;  \frac{a}{b^2}
+\end{eqnarray}&lt;/p&gt;
+&lt;p&gt;伽马分布是单变量高斯分布精度（方差$\sigma$的倒数）参数的共轭先验。共轭先验具有一个良好的性质：一个分布乘以该分布的共轭先验得到的后验分布仍然满足该分布。
+当$a=1$ 时，伽马分布就变为了指数分布(exponential distribution)，当$b=\frac{1}{2}$时，可以变成卡方分布(Chi-
+squared distribution)：$\chi^2(x|\nu)=Gam(x| \frac{1}{\nu},\frac{1}{2})$。下面看一下$b=
+1$时的伽马分布，红，蓝，绿分别代表$a=1,1.5,2$的情况。从图中可以看出，伽马分布可以在有一个很快的衰减过程，可以用来模拟“长尾”（long
+tail）现象。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;scipy&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stats&lt;/span&gt; &lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;gamma&lt;/span&gt;
+
+&lt;span class="n"&gt;figsize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;linspace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;a_s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mf"&gt;1.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;in&lt;/span&gt; &lt;span class="n"&gt;enumerate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a_s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;subplot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a_s&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;=%&lt;/span&gt;&lt;span class="mf"&gt;.2f&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;plot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;gamma&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pdf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="/images/b_8_0.png" /&gt;&lt;/p&gt;
+&lt;h4&gt;学生分布(student's-t distribution)&lt;/h4&gt;
+&lt;p&gt;假设有一个单变量的高斯分布$\mathcal{N}(x|\mu,\tau^{-1})$和精度共轭伽马先验分布$Gam(\tau|a,b)$，使用换元积分法，令$
+\lambda=\left[b+\frac{(x-\mu)^2}{2}\right]\tau$}，得到学生分布:&lt;/p&gt;
+&lt;p&gt;\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+  \nonumber p(x|\mu,a,b) &amp;amp;=&amp;amp; \int_{0}^{\infty}
+\mathcal{N}(x|\mu,\tau^{-1})Gam(\tau|a,b)d\tau \\
+   \nonumber  &amp;amp;=&amp;amp; \int_{0}^{\infty} \left(\frac{\tau}{2\pi}\right)^{\frac{1}{2}}
+\exp{-\frac{\tau}{2}(x-\mu)^2}\frac{1}{\Gamma(a)}b^a\tau^{a-1}e^{-b\tau}d\tau
+\\
+   &amp;amp;=&amp;amp; \frac{\Gamma(a+\frac{1}{2})}{\Gamma(a)}b^a\left(\frac{1}{2\pi}\right)^{\f
+rac{1}{2}}\left[b+\frac{(x-\mu)^2}{2}\right]^{-a-\frac{1}{2}}
+\end{eqnarray}&lt;/p&gt;
+&lt;p&gt;令$\nu=2a$，$\lambda=\frac{a}{b}$，可以得到下面形式：&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{stu-dist}
+  p(x|\mu,\lambda,\nu)=\frac{\Gamma(\nu/2+\frac{1}{2})}{\Gamma(\nu/2)}\left(\fra
+c{\lambda}{\pi\nu}\right)^{\frac{1}{2}}\left[1+\frac{\lambda(x-\mu)^2}{\nu}\righ
+t]^{-\nu/2-\frac{1}{2}}
+\end{equation}&lt;/p&gt;
+&lt;p&gt;称$X$服从参数为$\mu,\lambda,\nu$的学生分布(student's-t distribution)，记作$X\sim
+St(\mu,\lambda,\nu)$，其中，$\lambda$是分布的精度，$\nu$是分布的自由度(degrees of
+freedom)。当$\nu=1$时，学生分布变成柯西分布(Cauchy distribution)；当$\nu\rightarrow\infty$时，学生分布
+变成高斯分布。下面的例子：红，绿，蓝对应的自由度$\nu=0.1,1,\infty$，看以看出相对于高斯分布，学生分布可以的“尾巴”比较大，这样产生的一个好处就
+是对离群值(outlines) 更好的鲁棒性。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;scipy&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stats&lt;/span&gt; &lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;norm&lt;/span&gt;
+&lt;span class="n"&gt;figsize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;linspace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;nu_s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mf"&gt;.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;red&lt;/span&gt;&lt;span class="sc"&gt;&amp;#39;,&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;green&lt;/span&gt;&lt;span class="sc"&gt;&amp;#39;,&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;blue&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;nu&lt;/span&gt; &lt;span class="n"&gt;in&lt;/span&gt; &lt;span class="n"&gt;enumerate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;nu_s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;plot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pdf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;nu&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;&lt;span class="n"&gt;color&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;$\\&lt;/span&gt;&lt;span class="n"&gt;nu&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="o"&gt;=%&lt;/span&gt;&lt;span class="mf"&gt;0.2f&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="n"&gt;nu&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;plot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;norm&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pdf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;color&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;$\\&lt;/span&gt;&lt;span class="n"&gt;nu&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="o"&gt;=+&lt;/span&gt;&lt;span class="err"&gt;$\&lt;/span&gt;&lt;span class="n"&gt;infty&lt;/span&gt;&lt;span class="err"&gt;$&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;legend&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="/images/b_10_0.png" /&gt;&lt;/p&gt;
+&lt;h4&gt;拉普拉斯分布(Laplace distribution)&lt;/h4&gt;
+&lt;p&gt;对一个随机变量$X$，拉普拉斯分布的密度函数如下:&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{lap-dist}
+  p(x|\mu,b)= \frac{1}{2b} \exp{-\frac{\mid x-\mu\mid}{b}}
+\end{equation}
+ 记作$X\sim Lap(\mu,b)$，其中，$\mu$是分布的均值，表示分布的位置，$b$用来做正规化。其均值与方差为：
+ \begin{eqnarray}
+ % \nonumber to remove numbering (before each equation)
+   \mathbb{E}(x) &amp;amp;=&amp;amp; \mu \
+   var(x) &amp;amp;=&amp;amp; \frac{1}{2b^2}
+ \end{eqnarray}&lt;/p&gt;
+&lt;h4&gt;贝塔分布(Beta distribution)&lt;/h4&gt;
+&lt;p&gt;对一个随机变量$X \in [0,1]$，贝塔分布的密度函数如下:&lt;/p&gt;
+&lt;p&gt;\begin{equation}
+  p(x|a,b)= \frac{\Gamma(a)}{\Gamma(a)\Gamma(b)}x^{a-1}(1-x)^{(b-1)}
+\end{equation}
+ 记作$X\sim Beta(\mu,b)$，其中，$a,b&amp;gt;0$用来做正规化。其均值与方差为：
+ \begin{eqnarray}
+ % \nonumber to remove numbering (before each equation)
+   \mathbb{E}(x) &amp;amp;=&amp;amp; \frac{a}{a+b} \
+   var(x) &amp;amp;=&amp;amp; \frac{ab}{(a+b)^2(a+b+1)}
+ \end{eqnarray}
+ 贝塔分布是伯努利分布的共轭先验，经常用来表示二值事件的概率，其中$a,b$可以分别用来表示$X=0,X=1$时的先验数目。对上面列出的分布进行简单的总结：&lt;/p&gt;
+&lt;p&gt;&amp;lt;img src="/images/b1.png", height=300pt, width=450pt)&lt;/p&gt;
+&lt;h3&gt;联合分布&lt;/h3&gt;
+&lt;p&gt;前面的分布都是单变量的，下面看一下多变量随机变量的情况。对于多维随机变量，可以看作多个随机变量的组合。联合分布$p(x_1,x_2,...,x_D)$用来表示
+这些随机变量之间的关系。就离散变量来说，多维随机变量的分布可以用一个多维的数组来表示，如果每一个随机变量有$K$个参数，则联合分布就有$K^D$个参数，可以用条
+件独立关系来减少参数的数目。对于连续变量，可以限制密度函数的范围。&lt;/p&gt;
+&lt;p&gt;与联合分布密切相关，经常用到的两类分布是：条件分布和边缘分布。条件分布可以用来对监督学习模型进行建模，监督学习问题，可以表示求解$p(t|\mathbf{x}
+,\theta)$，其中，$\mathbf{x}$是特征向量，$t$是目标值，$\theta$是模型参数；边缘分布可以用来对非监督学习问题进行建模，非监督学习问
+题，可以表示成求解$p(\mathbf{x}|\theta)$，很多时候，可以设置一些隐变量来表示那些未知的因素:
+ \begin{eqnarray}
+ % \nonumber to remove numbering (before each equation)
+    p(t|\mathbf{x}, \theta) &amp;amp;=&amp;amp; \int_{\mathbf{z}}
+p(t|\mathbf{x},\mathbf{z},\theta)\
+    p(\mathbf{x}| \theta) &amp;amp;=&amp;amp; \int_{\mathbf{z}}p(\mathbf{x},\mathbf{z}|\theta)
+ \end{eqnarray}
+ \subsection{协方差和相关系数}
+ 协方差(covariance)和相关系数(correlation coefficients)可以用来表示两个随机变量之间的关系。协方差的定义如下：
+ \begin{equation}\label{cov}
+   cov(X,Y)=\mathbb{E}{[X-\mathbb{E}(X)][Y-\mathbb{E}(Y)]}
+ \end{equation}
+ 相关系数定义为：
+ \begin{equation}\label{cc}
+   corr(X,Y)=\frac{cov(X,Y)}{\sqrt{var(X)}\sqrt{var(Y)}}
+ \end{equation}
+ 注意上面式子中的方差均不能为零。&lt;/p&gt;
+&lt;p&gt;对一个$D$维的随机变量$X=(x_1,x_2,...,x_D)$，可以用元素之间协方差的矩阵来表示两个$D$为随机变量之间的关系，矩阵如下：
+ \begin{equation}\label{cov_matrix}
+   cov(X)=\left(
+            \begin{array}{cccc}
+              var(x_1) &amp;amp; cov(x_1,x_2) &amp;amp; \cdots &amp;amp; cov(x_1,x_D) \\
+              cov(x_2,x_1) &amp;amp; var(x_2) &amp;amp; \cdots &amp;amp; cov(x_2,x_D) \\
+              \vdots &amp;amp; \vdots &amp;amp; \ddots &amp;amp; \vdots \\
+              cov(x_D,x_1) &amp;amp; cov(x_D,x_2) &amp;amp; \cdots &amp;amp; cov(x_D,x_D)
+            \end{array}
+          \right)
+ \end{equation}
+ 该矩阵称为协方差矩阵。&lt;/p&gt;
+&lt;h4&gt;多变量高斯分布(multivariate guassian distribution)&lt;/h4&gt;
+&lt;p&gt;多变量高斯分布是对单变量高斯分布的扩展，也是在机器学习中用的最多的一类分布。&lt;/p&gt;
+&lt;p&gt;\begin{equation}
+  \mathcal N( \mathbf{x}|\mu,\Sigma)=\frac{1}{(2\pi)^{D/2}|\Sigma|^{1/2}}\exp\{
+-(\mathbf{x}-\mu)^T\Sigma^{-1}(\mathbf{x}-\mu)\}
+\end{equation}&lt;/p&gt;
+&lt;p&gt;其中，$\mu$是均值向量，$\Sigma=cov(x)$是$D\times D$协方差矩阵。&lt;/p&gt;
+&lt;p&gt;高斯分布有两个局限：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;矩阵求逆，计算代价大。在协方差是一般矩阵时，多变量高斯分布密度函数的参数数目是：$D+D(D+1)/2$，参数规模随着特征维度平方增长，矩阵求逆花费的代价大
+。因此通常会对协方差矩阵做一些限制，比如限制为对角阵(这时候参数就变成了$2D$)，还可以进一步限制对角线上的元素值相同(这时候参数就变成了$D+1$)，是单位
+矩阵乘以一个常数。三种不同的情况，如图\ref{gcovfig} 所示。&lt;/li&gt;
+&lt;li&gt;高斯是单峰的，只有一个最大值，对一些多峰数据拟合不好。这个确定可以通过引入隐变量来解决，具体会在后面详细描述。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;均值和方差为：
+\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+  \mathbb{E}(\mathbf{x}) &amp;amp;=&amp;amp; \mu \\
+  cov(\mathbf{x}) &amp;amp;=&amp;amp; \Sigma
+\end{eqnarray}&lt;/p&gt;
+&lt;p&gt;下面看几个简单的多变量高斯分布的例子，从左到右，协方差矩阵分别为：一般矩阵，对角矩阵，单位矩阵。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="cp"&gt;# mvn is not included in the released scipy library, but will be included in future. &lt;/span&gt;
+&lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;linalg&lt;/span&gt; &lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;lstsq&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;slogdet&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;eig&lt;/span&gt;
+&lt;span class="n"&gt;from&lt;/span&gt; &lt;span class="n"&gt;numpy&lt;/span&gt; &lt;span class="n"&gt;import&lt;/span&gt; &lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;exp&lt;/span&gt;
+&lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;mvn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mu&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Sigma&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="err"&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;implement&lt;/span&gt; &lt;span class="n"&gt;PDF&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;multivariate&lt;/span&gt; &lt;span class="n"&gt;normal&lt;/span&gt; &lt;span class="n"&gt;distribution&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+       &lt;span class="nl"&gt;Parameters:&lt;/span&gt;
+         &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;D&lt;/span&gt; &lt;span class="n"&gt;matrix&lt;/span&gt;
+         &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;mu&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mean&lt;/span&gt; &lt;span class="n"&gt;vector&lt;/span&gt;
+         &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;Sigma&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;covariance&lt;/span&gt; &lt;span class="n"&gt;matrix&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+    &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;Xm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;mu&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;
+    &lt;span class="n"&gt;logv&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Xm&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;lstsq&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Sigma&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Xm&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;axis&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pi&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;slogdet&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Sigma&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;exp&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;logv&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;figsize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="cp"&gt;# parameters&lt;/span&gt;
+&lt;span class="n"&gt;mu&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;array&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;Sigma1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;array&lt;/span&gt;&lt;span class="p"&gt;([[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mf"&gt;1.5&lt;/span&gt;&lt;span class="p"&gt;],[&lt;/span&gt;&lt;span class="mf"&gt;1.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]])&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;eig&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Sigma1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Sigma2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Sigma1&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="n"&gt;dot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Sigma3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;eye&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Sigma_s&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;Sigma1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Sigma2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Sigma3&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="cp"&gt;# data&lt;/span&gt;
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;linspace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;50&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;linspace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;50&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;x1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;meshgrid&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;x1&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;shape&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="n"&gt;in&lt;/span&gt; &lt;span class="n"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;in&lt;/span&gt; &lt;span class="n"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;x1&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;y1&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt;&lt;span class="p"&gt;]])&lt;/span&gt;  
+&lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;array&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="cp"&gt;# plot&lt;/span&gt;
+&lt;span class="n"&gt;titles&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;ordinary&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;diagonal&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="n"&gt;spherical&lt;/span&gt;&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Sigma&lt;/span&gt; &lt;span class="n"&gt;in&lt;/span&gt; &lt;span class="n"&gt;enumerate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Sigma_s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;subplot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Sigma_s&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;z&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mvn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;X&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mu&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Sigma&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;z&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reshape&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;contour&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;y1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;titles&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="png" src="/images/b_12_0.png" /&gt;&lt;/p&gt;
+&lt;h4&gt;多变量学生分布(multivariate student's-t distribution)&lt;/h4&gt;
+&lt;p&gt;多变量学生分布的形式如下：&lt;/p&gt;
+&lt;p&gt;\begin{equation}
+  p(\mathbf{x}|\mu,\Lambda,\nu)=\frac{\Gamma(\nu/2+\frac{D}{2})}{\Gamma(\nu/2)}\
+left(\frac{\Lambda^{1/2}}{(\pi\nu)^{D/2}}\right)\left[1+\frac{(\mathbf{x}-\mathr
+m{\mu})^T \Lambda^{-1}(\mathbf{x}-\mathrm{\mu})}{\nu}\right]^{-\nu/2-1/2}
+\end{equation}&lt;/p&gt;
+&lt;p&gt;在$\nu\rightarrow \infty$时，学生分布就成了高斯分布。均值和方差分别为：&lt;/p&gt;
+&lt;p&gt;\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+   \mathbb{E}(\mathbf{x}) &amp;amp;=&amp;amp; \mu \\
+  cov(\mathbf{x}) &amp;amp;=&amp;amp; \frac{\nu}{\nu-2}\Lambda
+\end{eqnarray}&lt;/p&gt;
+&lt;h4&gt;狄利克雷分布(dirichlet distribution)&lt;/h4&gt;
+&lt;p&gt;狄利克雷分布是在贝塔分布的多变量的扩展，是类别分布和多项式分布的共轭先验，在贝叶斯估计中常用作先验。对于随机变量$X=(x_1,x_2,...,x_K)$，满足
+下面的条件：&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{dir_condition}
+  0 \leq x_k \leq 1;
+  \sum_k x_k =1.
+\end{equation}&lt;/p&gt;
+&lt;p&gt;其密度函数形式如下：&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{dirich}
+  p(\mathbf{x}|\alpha)= \frac{1}{B(\alpha)}\prod_{k=1}^{K} x_k ^{\alpha_k-1}
+\end{equation}&lt;/p&gt;
+&lt;p&gt;其中,$\alpha=(\alpha_1,\alpha_2,...,\alpha_K)$，
+\begin{equation}\label{dirb}
+  B(\alpha)=\frac{\prod_{k=1}^{K}\Gamma(\alpha_k)}{\Gamma\left(\sum_{k=1}^K\alph
+a_k\right)}
+\end{equation}
+\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+  \mathbb{E}(\mathbf{x}) &amp;amp;=&amp;amp; \mu \\
+  cov(\mathbf{x}) &amp;amp;=&amp;amp; \Sigma
+\end{eqnarray}&lt;/p&gt;
+&lt;h3&gt;怎么选择分布？&lt;/h3&gt;
+&lt;p&gt;前面几节看了很多的分布形式，但是在解决一个具体问题的时候，我们收集了很多的数据，一个自然的疑问就是：用来解决问题的数据到底符合一个什么样的分布？因为只要我们知道
+了我们数据的分布，我们就能根据未来的新数据的概率大小在做相应的决策。选择一个分布，可以分为两个阶段：首先，确定分布的密度函数是什么类型，是高斯分布还是伽马分布？
+其次，对选择的密度函数，选择恰当的函数参数。&lt;/p&gt;
+&lt;p&gt;对选择分布形式来说，这是一个比较困难的事情。简单的总结一下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;根据专家的经验来决定服从什么样的分布。这是凭人的经验来决定的，比如知道噪声可以用高斯来拟合，次品率可以用泊松分布；&lt;/li&gt;
+&lt;li&gt;使用统计数字，比如均值，中位数，众数等的关系，来简单的决定分布的形式。比如：对于高斯这样的对称分布，均值和中位数应该相等；对于伽马这样的“左偏”的分布，均值
+应该大于中位数。&lt;/li&gt;
+&lt;li&gt;使用直方图和密度估计的方式做出样本数据的图像，看一下符合什么样的分布。当数据很大的时候，根据大数定理，可以很好的估计。&lt;/li&gt;
+&lt;li&gt;使用统计测试的方式，比如卡方检验。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;对于如何决定模型中的参数，在第一章中有过描述，比如可以使用交叉验证的方法进行参数选择。&lt;/p&gt;
+&lt;h3&gt;模型参数的估计方法&lt;/h3&gt;
+&lt;p&gt;我们已经知道，监督学习问题和非监督学习问题分别对应着求解$p(t|\mathbf{x},\theta)$，$p(\mathbf{x}|\theta)$的概率分布
+。本节讨论的是关于如何求解参数，来确定模型的分布。这里讨论三种比较常用的方法：最大似然估计方法(maximum likelihood
+estimation,MLE)，最大后验估计方法(maximum posterior estimation,MAP)，贝叶斯估计(Bayesian
+estimation)。&lt;/p&gt;
+&lt;p&gt;设训练集(training set)：$ \mathbf{D}
+=\{(\mathbf{x}_1,t_1),(\mathbf{x}_2,t_2),...,(\mathbf{x}_m,t_m)\}$,
+每一行$(\mathbf{x}_i,t_i)$ 称为一个实例(example)，其中，$\mathbf{x}_i$通常称为特征向量(feature
+vector),
+$t_i$称为目标值。把$\mathbf{x}$的定义域记作$\mathcal{X}$，把$\mathbf{t}$的定义域记作$\mathcal{T}$。&lt;/p&gt;
+&lt;h4&gt;最大似然估计&lt;/h4&gt;
+&lt;p&gt;在最大似然估计中，将$\theta$看作单纯的参数。最大似然估计(MLE)寻找使得似然函数(likelihood function)最大的参数值，作为最优的参数
+取值$\theta$。对于非监督问题来说，假设数据点$\mathbf{D}={\mathbf{x}_1,\mathbf{x}_2,...,\mathbf{x}
+_m}$ 之间是独立同分布的(i.i.d)，则似然函数的定义如下：&lt;/p&gt;
+&lt;p&gt;\begin{equation}
+  \mathcal{L}(\theta) = p(\mathbf x_1,\mathbf x_2,...,\mathbf x_m|\theta)
+=\prod_{i=1}^{m}p(\mathbf x_i|\theta)
+\end{equation}&lt;/p&gt;
+&lt;p&gt;在实际的应用中，经常使用的是对数似然函数如下：&lt;/p&gt;
+&lt;p&gt;\begin{equation}
+  \ln\mathcal{L}(\theta) = \sum_{i=1}^{m}\ln p(\mathbf{x}_i|\theta)
+\end{equation}&lt;/p&gt;
+&lt;p&gt;似然函数根据变量类型不同，有不一样的解释。对离散变量来说，似然的值就是在选定某些参数的情况下，数据点的概率；而对于连续变量来说，由于使用的是密度函数，则似然的值
+没有任何物理意义，只是用来比较选定不同参数时彼此之间的大小。则最大似然估计就是求解下面的式子：&lt;/p&gt;
+&lt;p&gt;\begin{equation}
+  \theta^* = arg\max_{\theta} \ln\mathcal{L}(\theta)
+\end{equation}&lt;/p&gt;
+&lt;p&gt;值得注意的是似然函数的最大值不一定唯一，也不一定存在。最大似然估计有两个缺点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在数据点比较少的情况下，容易过拟合。&lt;/li&gt;
+&lt;li&gt;方法的鲁棒性不好。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;上面的似然函数是对非监督问题来说的，对于监督学习，对数似然函数如下：&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{sup-likelihood}
+   \ln\mathcal{L}(\theta) = \sum_{i=1}^{m}\ln p(t_i|\mathbf{x}_i,\theta)
+\end{equation}&lt;/p&gt;
+&lt;h4&gt;最大后验估计&lt;/h4&gt;
+&lt;p&gt;最大似然方法容易过拟合，为了减少过拟合，引入参数$\theta$的先验$p(\theta)$。由贝叶斯定理得：$p(\theta|\mathbf
+x)=\frac{p(\mathbf x_1,\mathbf x_2,...,\mathbf
+x_m|\theta)p(\theta)}{\int_{\theta}p(\mathbf x_1,\mathbf x_2,...,\mathbf
+x_m|\theta)p(\theta)d\theta}$。 则最大后验估计就是求解下面的式子：&lt;/p&gt;
+&lt;p&gt;\begin{eqnarray}
+  \theta^* &amp;amp;=&amp;amp; arg\max_{\theta} \ln p(\theta|\mathbf x_1,\mathbf x_2,...,\mathbf
+x_m) \
+  \nonumber &amp;amp;=&amp;amp; arg\max_{\theta} \sum_{i=1}^{m}\ln p(\mathbf x_i|\theta) + \ln
+p(\theta)
+\end{eqnarray}&lt;/p&gt;
+&lt;p&gt;它与最大似然估计的经典方法有密切关系，但是它使用了一个增大的优化目标，这种方法将被估计量的先验分布融合其中。最大后验估计可以看作是规则化（regularizat
+ion）的最大似然估计。&lt;/p&gt;
+&lt;p&gt;最大后验估计可以用以下几种方法计算：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;解析方法，当后验分布的最大值可以有一个解析解，比如使用共轭先验的情况下。&lt;/li&gt;
+&lt;li&gt;通过如共扼梯度法或者牛顿法这样的数值优化方法进行，这通常需要一阶或者二阶导数，导数需要通过解析或者数值方法得到。&lt;/li&gt;
+&lt;li&gt;通过期望最大化算法实现，这种方法不需要后验密度的导数。&lt;/li&gt;
+&lt;li&gt;通过蒙特卡洛的方法求解。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;尽管使用了先验知识，但是MAP 通常不被认为是一种贝叶斯估计，因为它实际还是一种点估计，而贝叶斯使用估计量的分布来总结数据、得到推论。&lt;/p&gt;
+&lt;p&gt;上面的式子是对非监督学习来说的，对于监督学习,&lt;/p&gt;
+&lt;p&gt;$$p(\theta|\mathbf x,\mathbf t)=\frac{p(\mathbf t|\mathbf x_1,\mathbf
+x_2,...,\mathbf x_m,\theta)p(\theta)}{\int_{\theta}p(\mathbf t,\mathbf
+x_1,\mathbf x_2,...,\mathbf x_m,\theta)p(\theta)d\theta}$$&lt;/p&gt;
+&lt;p&gt;所以MAP求解下面的公式：&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{s-map}
+   \theta^* = arg\max_{\theta} \sum_{i=1}^{m}\ln p(t_i|\mathbf x_i,\theta) + \ln
+p(\theta)
+\end{equation}&lt;/p&gt;
+&lt;h4&gt;贝叶斯估计&lt;/h4&gt;
+&lt;p&gt;贝叶斯估计与最大似然估计，最大后验估计不同，在MLE，MAP方法中，都是寻找一个最优的参数值$\theta^*$，而在贝叶斯估计中，直接求在给定数据的条件下，对
+新数据的预测分布$p(\mathbf x|\mathbf D)$:&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{bayesian}
+  p(\mathbf x|\mathbf D) = \int_{\theta} p(\mathbf x|\theta)p(\theta|\mathbf
+D)d\theta
+\end{equation}&lt;/p&gt;
+&lt;p&gt;对于监督学习，可以求解下面的式子：&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{s-bayesian}
+  p(t|\mathbf x,\mathbf D) = \int_{\theta} p(t|\mathbf x,\theta)p(\theta|\mathbf
+D)d\theta
+\end{equation}&lt;/p&gt;
+&lt;p&gt;从上面的式子可以看出，不在是求解最优的$\theta^*$，而是求出$\theta^*$的后验概率，再使用后验对所有可能的$\theta^*$进行积分。随
+之带来的是计算上的问题，如果积分不存在解析解，那只能采取一些近似算法来做处理，比如变分法和蒙特卡洛方法。&lt;/p&gt;
+&lt;h3&gt;随机变量的转换&lt;/h3&gt;
+&lt;p&gt;这里讨论的是对一个随机变量$X$施加一个转换$f$，则新的随机变量$Y=f(X)$的分布于原来的分布有什么联系？在后面的模型中，会用到相关的知识，这里做一下描述
+，为了讨论的方便，这里只讨论单变量的情况，对于多变量的情况，只是简单的做一下说明。&lt;/p&gt;
+&lt;p&gt;直观的对于随机变量$X$是离散的情况，由于转换$f$是一个确定性的操作，这样原来$X=x$的概率也就被转移到了$Y=f(x)$，所以可以得到公式：&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{d-trans}
+  p_Y(y)=\sum_{x \in {x|f(x)=y}} p_X(x)
+\end{equation}
+其中：$p_X$表示随机变量$X$服从的分布。&lt;/p&gt;
+&lt;p&gt;对于连续性的变量，可以采用相同的思想，连续性的随机变量的概率是在随机变量附近极小区间的一个积分值。对于在$(x,x+\delta
+x)$的概率也就被转移到了$(y,y+\delta y)$，所以$p_X(x)\delta x\approx p_Y(y)\delta y$，所以可以得到：&lt;/p&gt;
+&lt;p&gt;\begin{equation}\label{c-trans}
+  p_Y(y)=  p_X(x) \mid\frac{dx}{dy}\mid
+\end{equation}&lt;/p&gt;
+&lt;h3&gt;蒙特卡罗近似&lt;/h3&gt;
+&lt;p&gt;有时候使用随机变量的分布函数$f$进行计算，会使得问题变得非常困难。这时候可以采用一些近似的方法，常用的一种近似方法是：从分布中进行采样，得到$m$个样本点$x
+&lt;em i="1"&gt;1,x_2,x_3,...,x_m$，然后使用经验分布${f(x_i)}&lt;/em&gt;^m$来代替$f$。这样的近似方法称为蒙特卡洛近似。&lt;/p&gt;
+&lt;p&gt;使用蒙特卡洛近似，对一个函数$f(x)$求期望，可以近似为：
+\begin{equation}
+  \mathbb{E}(f)=\frac{1}{N}\sum_{i=1}^{m}f(x_i)
+\end{equation}&lt;/p&gt;
+&lt;h3&gt;引用&lt;/h3&gt;
+&lt;p&gt;[1] Grinstead and Snell's Introduction to Probability, Peter G. Doyle, 2006.&lt;/p&gt;
+&lt;p&gt;[2] Scipy, &lt;a href="http://www.scipy.org/"&gt;http://www.scipy.org/&lt;/a&gt;&lt;/p&gt;&lt;script type= "text/javascript"&gt;
+    if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+        var mathjaxscript = document.createElement('script');
+        mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+        mathjaxscript.type = 'text/javascript';
+        mathjaxscript.src = 'https:' == document.location.protocol
+                ? 'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
+                : 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+        mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+            "MathJax.Hub.Config({" +
+            "    config: ['MMLorHTML.js']," +
+            "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+            "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+            "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+            "    displayAlign: 'center'," +
+            "    displayIndent: '0em'," +
+            "    showMathMenu: true," +
+            "    tex2jax: { " +
+            "        inlineMath: [ ['$','$'] ], " +
+            "        displayMath: [ ['$$','$$'] ]," +
+            "        processEscapes: true," +
+            "        preview: 'TeX'," +
+            "    }, " +
+            "    'HTML-CSS': { " +
+            "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'black ! important'} }" +
+            "    } " +
+            "}); ";
+        (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+    }
+&lt;/script&gt;
 </summary><category term="Machine Learning"></category></entry></feed>
