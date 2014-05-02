@@ -368,8 +368,8 @@ N(x|\mu,\sigma)$可以写成$x \sim \mathcal N(x|\mu,\sigma)$；其均值与方�
 \end{eqnarray}</p>
 <p>令$\nu=2a$，$\lambda=\frac{a}{b}$，可以得到下面形式：</p>
 <p>\begin{equation}\label{stu-dist}
-  p(x|\mu,\lambda,\nu)=\frac{\Gamma(\nu/2+\frac{1}{2})}{\Gamma(\nu/2)}\left(\fra
-c{\lambda}{\pi\nu}\right)^{\frac{1}{2}}\left[1+\frac{\lambda(x-\mu)^2}{\nu}\right]
+  p(x|\mu,\lambda,\nu)=\frac{\Gamma(\nu/2+\frac{1}{2})}{\Gamma(\nu/2)}\left(
+  \frac{\lambda}{\pi\nu}\right)^{\frac{1}{2}}\left[1+\frac{\lambda(x-\mu)^2}{\nu}\right]
 ^{-\nu/2-\frac{1}{2}}
 \end{equation}</p>
 <p>称$X$服从参数为$\mu,\lambda,\nu$的学生分布(student's-t distribution)，记作
@@ -517,9 +517,9 @@ p(t|\mathbf{x},\mathbf{z},\theta)\
 <h4>多变量学生分布(multivariate student's-t distribution)</h4>
 <p>多变量学生分布的形式如下：</p>
 <p>\begin{equation}
-  p(\mathbf{x}|\mu,\Lambda,\nu)=\frac{\Gamma(\nu/2+\frac{D}{2})}{\Gamma(\nu/2)}\
-left(\frac{\Lambda^{1/2}}{(\pi\nu)^{D/2}}\right)\left[1+\frac{(\mathbf{x}-
-\mathrm{\mu})^T \Lambda^{-1}(\mathbf{x}-\mathrm{\mu})}{\nu}\right]^{-\nu/2-1/2}
+  p(\mathbf{x}|\mu,\Lambda,\nu)=\frac{\Gamma(\nu/2+\frac{D}{2})}{\Gamma(\nu/2)}
+  \left(\frac{\Lambda^{1/2}}{(\pi\nu)^{D/2}}\right)\left[1+\frac{(\mathbf{x}-
+  \mathrm{\mu})^T \Lambda^{-1}(\mathbf{x}-\mathrm{\mu})}{\nu}\right]^{-\nu/2-1/2}
 \end{equation}</p>
 <p>在$\nu\rightarrow \infty$时，学生分布就成了高斯分布。均值和方差分别为：</p>
 <p>\begin{eqnarray}
