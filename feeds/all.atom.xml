@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>AI's bazaar</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2014-05-02T17:00:00+08:00</updated><entry><title>线性回归模型</title><link href="/posts/2014/05/linear_model/" rel="alternate"></link><updated>2014-05-02T17:00:00+08:00</updated><author><name>Webdancer</name></author><id>tag:,2014-05-02:posts/2014/05/linear_model/</id><summary type="html">&lt;p&gt;本章讨论机器学习里面最简单，最基本的linear regression model(线性回归模型)。
-首先学习线性回归模型，然后在学习使用概率一章中讲的参数求解的方式进行参数求解，最后是最优化时候使用的导数法和随机梯度下降的方法。&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>AI's bazaar</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2014-05-02T17:00:00+08:00</updated><entry><title>线性回归模型</title><link href="/posts/2014/05/linear_model/" rel="alternate"></link><updated>2014-05-02T17:00:00+08:00</updated><author><name>Webdancer</name></author><id>tag:,2014-05-02:posts/2014/05/linear_model/</id><summary type="html">&lt;p&gt;本章讨论机器学习里面最简单，最基本的linear regression model（线性回归模型）。首先学习线性回归模型，然后在学习使用概率一章中讲的参数求解的方式进行参数求解，最后是最优化时候使用的导数法和随机梯度下降的方法。&lt;/p&gt;
 &lt;h3&gt;线性回归(linear regression)&lt;/h3&gt;
-&lt;p&gt;一般来说，机器学习的目的就是找一个函数$f:\mathcal{X} \rightarrow \mathcal{Y}$。在回归问题中，$\mathcal{Y}$是
-连续的，一般属于$\mathbb{R}$，比如我们要根据某个人烟龄来预测他的能活得岁数；根据过去几天的温度，预测未来几天的温度等。我们关心模型具体的输出值，这些
-值都是有具体的意义的。&lt;/p&gt;
-&lt;p&gt;线性回归模型是一种结构简单的统计模型，$\mathcal{X}$与$\mathcal{Y}$是线性关系。虽然简单，对于我们理解后面的一些概念非常重要。线性回归是
-什么呢？简单来说，回归就是由一堆数来预测出一堆我们感兴趣的数。就如上面说的，回归模型的输出是连续的数值，这些数值通常就是我们需要的，比如预测大学的排名；这区别于
+&lt;p&gt;一般来说，机器学习的目的就是找一个函数$f:\mathcal{X} \rightarrow \mathcal{Y}$。在回归问题中，$\mathcal{Y}$是连续的，一般属于$\mathbb{R}$。比如我们要根据某个人烟龄来预测他的能活得岁数；根据过去几天的温度，预测未来几天的温度等。我们关心模型具体的输出值，这些值都是有具体的意义的。&lt;/p&gt;
+&lt;p&gt;线性回归模型是一种结构简单的统计模型，$\mathcal{X}$与$\mathcal{Y}$是线性关系。虽然简单，了解线性模型的原理对于我们理解后面的一些概念非常重要。线性回归是什么呢？简单来说，回归就是由一堆数来预测出一堆我们感兴趣的数。就如上面说的，回归模型的输出是连续的数值，这些数值通常就是我们需要的，比如预测大学的排名；这区别于
 以后的我们要学习的分类问题，分类模型的输出时离散的，通常分类的离散数值只是一些符号代表，没有实际的意义。下面从最简单的单变量线性回归模型说起，再拓展到多变量的模
 型。&lt;/p&gt;
 &lt;h4&gt;单变量线性回归模型&lt;/h4&gt;
 &lt;p&gt;单变量线性模型用到的一些符号：已知含有$N$个特征变量$x$以及对应的目标变量$t$的数据集合，记作：$\{(x^{(1)},t^{(1)}),(x^{(2)
 },t^{(2)}),\dots.,(x^{(N)},t^{(N)})\}$，其中第$i$
-个变量写为$(x^{(i)},t^{(i)})$，这里为了与下面多变量进行区别，用上标来表示第几个实例。 新的$x$的预测值为$\hat{t}$。顾名思义，线性
-回归也就是说$t$与$x$之间有线性关系，即目标值是输入值的线性组合。单变量线性回归的模型假设(hypothesis) 为：&lt;/p&gt;
+个变量写为$(x^{(i)},t^{(i)})$，这里为了与下面多变量进行区别，用上标来表示第几个实例。新的$x$的预测值为$\hat{t}$。顾名思义，线性回归也就是说$t$与$x$之间有线性关系，即目标值是输入值的线性组合。单变量线性回归的模型假设(hypothesis) 为：&lt;/p&gt;
 &lt;p&gt;\begin{equation}
 \hat{t}(x)=\theta_{0} + \theta_{1} x
 \end{equation}&lt;/p&gt;
 &lt;p&gt;其中，$x$为模型输入变量，$\hat{t}$为模型预测的目标变量值的近似，$ \theta=(\theta_{0},\theta_{1})^T$为模型参数&lt;/p&gt;
-&lt;p&gt;下面我们的目标就是如何求解模型中的参数来确定模型。直观上衡量模型好坏就是输出变量$\hat
-t$与目标变量$t$相差的程度，两者越接近，则越能反映$t$与$x$之间的关系，所以可以使用平方损失函数(squared loss
-function）作为求解模型的参数的优化目标函数，如下：&lt;/p&gt;
+&lt;p&gt;下面我们的目标就是如何求解模型中的参数来确定模型。直观上衡量模型好坏就是输出变量$\hat t$与目标变量$t$相差的程度，两者越接近，则越能反映$t$与$x$之间的关系，所以可以使用平方损失函数(squared loss function）作为求解模型的参数的优化目标函数，如下：&lt;/p&gt;
 &lt;p&gt;\begin{equation}
 \mathbb E=\frac{1}{2}\sum_{n=1}^{N}\{t^{(n)}-\hat{t}_\theta(x)\}^2
 \label{ls_error}
@@ -67,8 +60,8 @@ x^{(N)},t^{(N)})\}$,其中第$i$个变量写为$(\mathbf x^{(i)},t^{(i)})$，新
 \nonumber &amp;amp;=&amp;amp;  {\theta^{T}}\mathbf x
 \label{mullr}
 \end{eqnarray}&lt;/p&gt;
-&lt;p&gt;其中，$\mathbf x=(x_0,x_1,x_2,\dots,x_D)^{T}$为模型输入向量，$\hat{t}$为模型输出向量，$ \theta=(\th
-eta_{0},\theta_{1},\dots,\theta_D)$为参数，$D$为特征向量的维数。可以看到模型是关于输入$\mathbf x$ 和参数$
+&lt;p&gt;其中，$\mathbf x=(x_0,x_1,x_2,\dots,x_D)^{T}$为模型输入向量，$\hat{t}$为模型输出向量，
+$ \theta=(\theta_{0},\theta_{1},\dots,\theta_D)$为参数，$D$为特征向量的维数。可以看到模型是关于输入$\mathbf x$ 和参数$
 \theta$ 的线性函数。这样把$N$个观测变量$\mathbf x$的数据集收集在一个矩阵中$ \mathbf X$中，记作：&lt;/p&gt;
 &lt;p&gt;\begin{equation}
 \label{xmat}
@@ -115,8 +108,7 @@ x)+\dots+\theta_{M}\phi_{M}(\mathbf x)
 x$来进行讨论。&lt;/p&gt;
 &lt;p&gt;下面要关注的就是如何得到最优的参数$ \theta^*$，下面就用最大似然估计方法来求解模型中的参数。&lt;/p&gt;
 &lt;h4&gt;最大似然估计&lt;/h4&gt;
-&lt;p&gt;在第二章中，对最大似然估计的原理已经做了介绍。下面看一下用最大似然估计来估计多变量线性回归模型中的参数。回归问题是一个典型的监督学习问题，使用最大似然估计，首先
-要确定的是$p(t|\mathbf x, \theta)$的条件分布。假设目标变量与模型预测变量之间存在噪声，两者关系如下：&lt;/p&gt;
+&lt;p&gt;在第二章中，对最大似然估计的原理已经做了介绍。下面看一下用最大似然估计来估计多变量线性回归模型中的参数。回归问题是一个典型的监督学习问题，使用最大似然估计，首先要确定的是$p(t|\mathbf x, \theta)$的条件分布。假设目标变量与模型预测变量之间存在噪声，两者关系如下：&lt;/p&gt;
 &lt;p&gt;\begin{equation}
 t=\hat{t}+\epsilon
 \label{tarvar}
@@ -145,8 +137,7 @@ N(t^{(n)}|\hat{t}^{(n)},\beta^{-1}) \\
 \frac{N}{2}\ln\beta-\frac{N}{2}\ln2\pi-\frac{\beta}{2}\sum_{n=1}^{N}\{t^{(n)}-
 \theta^{T} \mathbf x^{(n)}\}^2
 \end{eqnarray}&lt;/p&gt;
-&lt;p&gt;下面要做的就是最优化参数$\beta, \theta$使得似然函数取最大值，这就是最大似然方法的含义。等价的我们也可以最小化似然函数的相反数(negative
-likelihood function,NLL)，则&lt;/p&gt;
+&lt;p&gt;下面要做的就是最优化参数$\beta, \theta$使得似然函数取最大值，这就是最大似然方法的含义。等价的我们也可以最小化似然函数的相反数(negative likelihood function,NLL)，则&lt;/p&gt;
 &lt;p&gt;\begin{equation}\label{NLL}
   NLL( \theta) = -  \ln p(\mathbf t|\mathbf X, \theta,\beta)
 \end{equation}&lt;/p&gt;
@@ -279,21 +270,18 @@ x^{(n)})(\mathbf x^{(n)})\}
 \label{sto_gradient}
 \end{equation}&lt;/p&gt;
 &lt;p&gt;这时候一次迭代只需要一个数据即可，所以是一种在线的方法。算法过程如下：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;初始化参数向量$\theta$，学习速率 $\eta$&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;重复下面操作，直到收敛；&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;对训练集进行“洗牌”；&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;For {$i = 1 \to N$ }&lt;/p&gt;
-&lt;p&gt;*$ \theta   =  \theta-\eta \bigtriangledown \mathbf{J}_i( \theta)$&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="err"&gt;初始化参数向量$\&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="err"&gt;$，学习速率&lt;/span&gt; &lt;span class="err"&gt;$\&lt;/span&gt;&lt;span class="n"&gt;eta&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;
+
+&lt;span class="err"&gt;重复下面操作，直到收敛；&lt;/span&gt;
+
+   &lt;span class="err"&gt;对训练集进行“洗牌”；&lt;/span&gt;
+
+   &lt;span class="n"&gt;For&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+
+       &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;   &lt;span class="o"&gt;=&lt;/span&gt;  &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;eta&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;bigtriangledown&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;mathbf&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;J&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;span class="n"&gt;_i&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="n"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="err"&gt;$&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;其中，“洗牌”的意思就是打乱数据集原来数据的顺序。其中比较常用的洗牌算法有Fisher–Yates洗牌等。与梯度下降类似，学习速率的选择对于算法的结果又很重要的
 影响。&lt;/p&gt;
 &lt;p&gt;使用随机梯度下降算法来求解$NLL( \theta)$，则迭代公式为：&lt;/p&gt;
@@ -427,10 +415,7 @@ D)]-h(\mathbf x)\}^2
 &lt;p&gt;下面看一个具体的例子。我们从函数$\cos(2\pi x)$独立的生成100个数据集$\mathbf D_1,\mathbf D_2,...,\mathbf
 D_{100}$，每个数据集$\mathbf D_i$包含$25$个点，对所有的这些数据添加高斯噪声，然后使用正则化的基函数线性回归模型进行拟合，使用的基函数是
 高斯基函数，为了方便表示，图中的结果使用了$20$个数据集。图中左半部分的三幅图可以反映出方差的情况，右半部分的图可以反映出偏差情况。从图中可以观察到，在最上面
-的两幅图中，$\lambda$较大，此时方差较小，但是偏差较大，此时的模型太简单，出现了拟合不足(underfitting)的现象，最下边的两幅图，$\lamb
-da$较大，此时方差较大，但是偏差较小，此时的模型太复杂，出现了过拟合(overfitting)的现象，中间的两幅图反映了方差与偏差取得一个平衡时的情况。最下面
-的情况中，平均起来的结果与真实情况最接近，但是这样在实际的应用中不是最好的，这是由于在实际的问题中，我们只有1个数据集，而且这个数据集相对于总体来说，还是很小的
-（可以回忆在第一章第一节中的讨论）。一般来说，高的偏差，代表着模型拟合不足，而高的方差，代表着过拟合。使用不同的正则化系数的正则化线性回归模型结果：从上到下的$
+的两幅图中，$\lambda$较大，此时方差较小，但是偏差较大，此时的模型太简单，出现了拟合不足(underfitting)的现象，最下边的两幅图，$\lambda$较大，此时方差较大，但是偏差较小，此时的模型太复杂，出现了过拟合(overfitting)的现象，中间的两幅图反映了方差与偏差取得一个平衡时的情况。最下面的情况中，平均起来的结果与真实情况最接近，但是这样在实际的应用中不是最好的，这是由于在实际的问题中，我们只有1个数据集，而且这个数据集相对于总体来说，还是很小的（可以回忆在第一章第一节中的讨论）。一般来说，高的偏差，代表着模型拟合不足，而高的方差，代表着过拟合。使用不同的正则化系数的正则化线性回归模型结果：从上到下的$
 \lambda$逐渐减少，模型变得逐渐复杂。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;sklearn&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;linear_model&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;lm&lt;/span&gt;
 
