@@ -7,7 +7,7 @@
         <meta name="copyright" content="Webdancer" />
 
 <meta name="keywords" content="Machine Learning, Machine Learning, " />
-        <title>机器学习简介 - AI's bazaar
+        <title>机器学习简介  · AI's bazaar
 </title>
         <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -20,6 +20,8 @@
         <link rel="apple-touch-icon" sizes="114x114" href="../../../../theme/images/apple-touch-icon-114x114.png" />
         <link rel="apple-touch-icon" sizes="144x144" href="../../../../theme/images/apple-touch-icon-144x144.png" />
         <link rel="icon" href="../../../../theme/images/apple-touch-icon-144x144.png" />
+        <link href="blog.aisbazaar.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="AI's bazaar - Full Atom Feed" />
+        <link href="blog.aisbazaar.com/feeds/Machine-Learning.atom.xml" type="application/atom+xml" rel="alternate" title="AI's bazaar - Machine Learning Category Atom Feed" />
     </head>
     <body>
         <div id="content-sans-footer">
@@ -425,20 +427,12 @@ learn.org/stable/index.html">http://scikit-learn.org/stable/index.html</a></p><s
     }
 </script>
 
-            <aside>
-            <nav>
-            <ul class="articles_timeline">
- 
-                <li class="previous_article">« <a href="../../../../posts/2014/05/pr_introduce/" title="Previous: 概率知识简介">概率知识简介</a></li>
-            </ul>
-            </nav>
-            </aside>
 <section>
 <div class="accordion" id="accordion2">
     <div class="accordion-group">
         <div class="accordion-heading">
             <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2"
-                href="../../../../posts/2014/04/ml_introduce//#disqus_thread">
+                href="../../../../posts/2014/04/ml_introduce/#disqus_thread">
                 Comments
             </a>
         </div>
@@ -464,6 +458,15 @@ learn.org/stable/index.html">http://scikit-learn.org/stable/index.html</a></p><s
     </div>
 </div>
 </section>
+            <aside>
+            <hr/>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="../../../../posts/2014/05/pr_introduce/" title="Previous: 概率知识简介">概率知识简介</a></li>
+            </ul>
+            </nav>
+            </aside>
         </div>
         <section>
         <div class="span2" style="float:right;font-size:0.9em;">
@@ -481,8 +484,8 @@ learn.org/stable/index.html">http://scikit-learn.org/stable/index.html</a></p><s
 
         </div>
         </section>
-    </div>
-    </article>
+</div>
+</article>
                 </div>
                 <div class="span1"></div>
             </div>
@@ -491,7 +494,7 @@ learn.org/stable/index.html">http://scikit-learn.org/stable/index.html</a></p><s
 <footer>
 <div id="footer">
     <ul class="footer-content">
-        <li class="elegant-power">Copyright ©<a href=http://mima.sdu.edu.cn/Members/~xuxinchao/> Webdancer</a> 2014 - Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
     </ul>
 </div>
 </footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
@@ -513,5 +516,21 @@ learn.org/stable/index.html">http://scikit-learn.org/stable/index.html</a></p><s
         (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
     }());
     </script>
+        <script  language="javascript" type="text/javascript">
+            function uncollapse() {
+                var hash_str = window.location.hash;
+                if (window.location.hash.match(/^#comment-\d+$/))
+                {
+                    var hash_str = '#disqus_thread';
+                }
+                $(hash_str).collapse({
+                    toggle: true
+                    })
+            }
+        </script>
+
+        <script type="text/javascript" language="JavaScript">
+            uncollapse(); 
+        </script>
     </body>
 </html>
