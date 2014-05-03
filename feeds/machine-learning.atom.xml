@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>AI's bazaar</title><link href="http://blog.aisbazaar.com/" rel="alternate"></link><link href="http://blog.aisbazaar.com/feeds/machine-learning.atom.xml" rel="self"></link><id>http://blog.aisbazaar.com/</id><updated>2014-05-02T21:00:00+08:00</updated><entry><title>logistic Regression 模型</title><link href="http://blog.aisbazaar.com/posts/2014/05/lr_model/" rel="alternate"></link><updated>2014-05-02T21:00:00+08:00</updated><author><name>Webdancer</name></author><id>tag:blog.aisbazaar.com,2014-05-02:posts/2014/05/lr_model/</id><summary type="html">&lt;p&gt;前面已经学习了线性回归模型来解决回归问题，本章讨论解决分类问题的相关模型（也叫做分类器，classifier）。构建概率分类器有两种常用的方式：概率判别模型和概
+<feed xmlns="http://www.w3.org/2005/Atom"><title>AI's Bazaar</title><link href="http://blog.aisbazaar.com/" rel="alternate"></link><link href="http://blog.aisbazaar.com/feeds/machine-learning.atom.xml" rel="self"></link><id>http://blog.aisbazaar.com/</id><updated>2014-05-02T21:00:00+08:00</updated><entry><title>logistic Regression 模型</title><link href="http://blog.aisbazaar.com/lr_model.html" rel="alternate"></link><updated>2014-05-02T21:00:00+08:00</updated><author><name>Webdancer</name></author><id>tag:blog.aisbazaar.com,2014-05-02:lr_model.html</id><summary type="html">&lt;p&gt;前面已经学习了线性回归模型来解决回归问题，本章讨论解决分类问题的相关模型（也叫做分类器，classifier）。构建概率分类器有两种常用的方式：概率判别模型和概
 率生成模型。概率判别模型是直接给出后验概率$p(t|\mathbf x)$；概率生成模型中，首先假设先验$p(t)$和似然函数$p(\mathbf
 x|t)$，然后根据贝叶斯定理,计算出后验概率$p(t|\mathbf x)$。主要内容是讨论分类常用的线性模型logistic regression，
 它是一种用来解决分类问题的概率判别模型。&lt;/p&gt;
@@ -352,7 +352,7 @@ X^T(\mathbf{T}-\mathbf{Y})
         (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
     }
 &lt;/script&gt;
-</summary><category term="Machine Learning"></category></entry><entry><title>线性回归模型</title><link href="http://blog.aisbazaar.com/posts/2014/05/linear_model/" rel="alternate"></link><updated>2014-05-02T17:00:00+08:00</updated><author><name>Webdancer</name></author><id>tag:blog.aisbazaar.com,2014-05-02:posts/2014/05/linear_model/</id><summary type="html">&lt;p&gt;本章讨论机器学习里面最简单，最基本的linear regression model（线性回归模型）。首先学习线性回归模型，然后在学习使用概率一章中讲的参数求解的方式进行参数求解，最后是最优化时候使用的导数法和随机梯度下降的方法。&lt;/p&gt;
+</summary><category term="Machine Learning"></category></entry><entry><title>线性回归模型</title><link href="http://blog.aisbazaar.com/linear_model.html" rel="alternate"></link><updated>2014-05-02T17:00:00+08:00</updated><author><name>Webdancer</name></author><id>tag:blog.aisbazaar.com,2014-05-02:linear_model.html</id><summary type="html">&lt;p&gt;本章讨论机器学习里面最简单，最基本的linear regression model（线性回归模型）。首先学习线性回归模型，然后在学习使用概率一章中讲的参数求解的方式进行参数求解，最后是最优化时候使用的导数法和随机梯度下降的方法。&lt;/p&gt;
 &lt;h3&gt;线性回归(linear regression)&lt;/h3&gt;
 &lt;p&gt;一般来说，机器学习的目的就是找一个函数$f:\mathcal{X} \rightarrow \mathcal{Y}$。在回归问题中，$\mathcal{Y}$是连续的，一般属于$\mathbb{R}$。比如我们要根据某个人烟龄来预测他的能活得岁数；根据过去几天的温度，预测未来几天的温度等。我们关心模型具体的输出值，这些值都是有具体的意义的。&lt;/p&gt;
 &lt;p&gt;线性回归模型是一种结构简单的统计模型，$\mathcal{X}$与$\mathcal{Y}$是线性关系。虽然简单，了解线性模型的原理对于我们理解后面的一些概念非常重要。线性回归是什么呢？简单来说，回归就是由一堆数来预测出一堆我们感兴趣的数。就如上面说的，回归模型的输出是连续的数值，这些数值通常就是我们需要的，比如预测大学的排名；这区别于
@@ -1154,7 +1154,7 @@ $的极限情况下，方差第二部分就会消失，此时预测分布的方�
         (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
     }
 &lt;/script&gt;
-</summary><category term="Machine Learning"></category></entry><entry><title>概率知识简介</title><link href="http://blog.aisbazaar.com/posts/2014/05/pr_introduce/" rel="alternate"></link><updated>2014-05-02T01:00:00+08:00</updated><author><name>Webdancer</name></author><id>tag:blog.aisbazaar.com,2014-05-02:posts/2014/05/pr_introduce/</id><summary type="html">&lt;p&gt;机器学习中，遇到的一个很关键的问题就是不确定性，可能不同的人对事物不确性的理解存在不同。对于不确性有两类认识：1)事物本身就是不确定性的，所以其背后的规律也就是不确定性的；2)事物本身是确定的，但由于人类认识的限制，所以需要用不确定的规律。典型的例子就是“量子”，波尔认为量子规律本身就是不确定的，而爱因斯坦则认为量子是确定的，量子的不确定性是人类认识的限制。概率论为解决不确定性问题提供了一个系统的框架，因此概率是机器学习问题中需要掌握的基础知识。机器学习可以分为了两个阶段，第一个阶段是推理(inference),得到相关的概率；第二阶段根据推理阶段得到的概率，使用决策论知识做出最优的决策。本章论述概率论的基本知识。&lt;/p&gt;
+</summary><category term="Machine Learning"></category></entry><entry><title>概率知识简介</title><link href="http://blog.aisbazaar.com/pr_introduce.html" rel="alternate"></link><updated>2014-05-02T01:00:00+08:00</updated><author><name>Webdancer</name></author><id>tag:blog.aisbazaar.com,2014-05-02:pr_introduce.html</id><summary type="html">&lt;p&gt;机器学习中，遇到的一个很关键的问题就是不确定性，可能不同的人对事物不确性的理解存在不同。对于不确性有两类认识：1)事物本身就是不确定性的，所以其背后的规律也就是不确定性的；2)事物本身是确定的，但由于人类认识的限制，所以需要用不确定的规律。典型的例子就是“量子”，波尔认为量子规律本身就是不确定的，而爱因斯坦则认为量子是确定的，量子的不确定性是人类认识的限制。概率论为解决不确定性问题提供了一个系统的框架，因此概率是机器学习问题中需要掌握的基础知识。机器学习可以分为了两个阶段，第一个阶段是推理(inference),得到相关的概率；第二阶段根据推理阶段得到的概率，使用决策论知识做出最优的决策。本章论述概率论的基本知识。&lt;/p&gt;
 &lt;h3&gt;概率&lt;/h3&gt;
 &lt;p&gt;概率论就是研究不确定现象的数学。举一个例子，做投掷一个色子的随机试验，每次试验点数可能为$1,2,3,4,5,6$，随机试验的结果，称为随机变量(random variable)，记作$X$。简单的说，随机变量就是可能样本输出空间的一个函数。随机变量的取值范围称为样本空间(sample space)，记作$\Omega$，在这个例子中，$\Omega=\{1,2,3,4,5,6\}$，样本空间的子集$A$称为事件(event)，比如出现点数为偶数。概率是对随机事件发生可能性的度量，满足一定的条件。&lt;/p&gt;
 &lt;blockquote&gt;
@@ -1790,7 +1790,7 @@ $x_1,x_2,x_3,...,x_m$，然后使用经验分布${f(x_i)}_{i=1}^m$来代替$f$�
         (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
     }
 &lt;/script&gt;
-</summary><category term="Machine Learning"></category></entry><entry><title>机器学习简介</title><link href="http://blog.aisbazaar.com/posts/2014/04/ml_introduce/" rel="alternate"></link><updated>2014-04-20T10:20:00+08:00</updated><author><name>Webdancer</name></author><id>tag:blog.aisbazaar.com,2014-04-20:posts/2014/04/ml_introduce/</id><summary type="html">&lt;h3&gt;什么是机器学习(machine learning)？&lt;/h3&gt;
+</summary><category term="Machine Learning"></category></entry><entry><title>机器学习简介</title><link href="http://blog.aisbazaar.com/ml_introduce.html" rel="alternate"></link><updated>2014-04-20T10:20:00+08:00</updated><author><name>Webdancer</name></author><id>tag:blog.aisbazaar.com,2014-04-20:ml_introduce.html</id><summary type="html">&lt;h3&gt;什么是机器学习(machine learning)？&lt;/h3&gt;
 &lt;p&gt;这本书我们讨论的是关于“机器学习”相关的知识，那么什么是机器学习？从目的的角度来说，机器学习主要的目的在于构建可以根据过往的经验自动学习以
 提高自身性能的计算机系统，以及了解自动学习背后的规律。其中广泛引用的是Tom Mitchell 给出的定义：&lt;/p&gt;
 &lt;blockquote&gt;

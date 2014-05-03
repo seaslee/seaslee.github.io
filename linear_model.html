@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Webdancer" />
+        <meta name="copyright" content="Webdancer" />
+
+<meta name="keywords" content="Machine Learning, Machine Learning, " />
+        <title>线性回归模型  · AI's Bazaar
+</title>
+        <link href="http://cdn-images.mailchimp.com/embedcode/slim-081711.css" rel="stylesheet" type="text/css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="http://blog.aisbazaar.com/theme/css/style.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="http://blog.aisbazaar.com/theme/css/solarizedlight.css" media="screen">
+        <link rel="shortcut icon" href="http://blog.aisbazaar.com/theme/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="http://blog.aisbazaar.com/theme/images/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="http://blog.aisbazaar.com/theme/images/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="http://blog.aisbazaar.com/theme/images/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="http://blog.aisbazaar.com/theme/images/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="http://blog.aisbazaar.com/theme/images/apple-touch-icon-144x144.png" />
+        <link rel="icon" href="http://blog.aisbazaar.com/theme/images/apple-touch-icon-144x144.png" />
+        <link href="http://blog.aisbazaar.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="AI's Bazaar - Full Atom Feed" />
+        <link href="http://blog.aisbazaar.com/feeds/Machine-Learning.atom.xml" type="application/atom+xml" rel="alternate" title="AI's Bazaar - Machine Learning Category Atom Feed" />
+    </head>
+    <body>
+        <div id="content-sans-footer">
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="http://blog.aisbazaar.com/"><span class=site-name>AI's Bazaar</span></a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right top-menu">
+                            <li ><a href="http://blog.aisbazaar.com">Home</a></li>
+                            <li ><a href="http://blog.aisbazaar.com/categories.html">Categories</a></li>
+                            <li ><a href="http://blog.aisbazaar.com/tags.html">Tags</a></li>
+                            <li ><a href="http://blog.aisbazaar.com/archives.html">Archives</a></li>
+                            <li><form class="navbar-search" action="http://blog.aisbazaar.com/search.html" onsubmit="return validateForm(this.elements['q'].value);"> <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input"></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1"></div>
+                <div class="span10">
+<article>
+<div class="row-fluid">
+    <header class="page_header span10 offset2">
+    <h1><a href="http://blog.aisbazaar.com/linear_model.html"> 线性回归模型  </a></h1>
+    </header>
+</div>
+
+<div class="row-fluid">
+        <div class="span8 offset2 article-content">
+
+            <p>本章讨论机器学习里面最简单，最基本的linear regression model（线性回归模型）。首先学习线性回归模型，然后在学习使用概率一章中讲的参数求解的方式进行参数求解，最后是最优化时候使用的导数法和随机梯度下降的方法。</p>
+<h3>线性回归(linear regression)</h3>
+<p>一般来说，机器学习的目的就是找一个函数$f:\mathcal{X} \rightarrow \mathcal{Y}$。在回归问题中，$\mathcal{Y}$是连续的，一般属于$\mathbb{R}$。比如我们要根据某个人烟龄来预测他的能活得岁数；根据过去几天的温度，预测未来几天的温度等。我们关心模型具体的输出值，这些值都是有具体的意义的。</p>
+<p>线性回归模型是一种结构简单的统计模型，$\mathcal{X}$与$\mathcal{Y}$是线性关系。虽然简单，了解线性模型的原理对于我们理解后面的一些概念非常重要。线性回归是什么呢？简单来说，回归就是由一堆数来预测出一堆我们感兴趣的数。就如上面说的，回归模型的输出是连续的数值，这些数值通常就是我们需要的，比如预测大学的排名；这区别于
+以后的我们要学习的分类问题，分类模型的输出时离散的，通常分类的离散数值只是一些符号代表，没有实际的意义。下面从最简单的单变量线性回归模型说起，再拓展到多变量的模
+型。</p>
+<h4>单变量线性回归模型</h4>
+<p>单变量线性模型用到的一些符号：已知含有$N$个特征变量$x$以及对应的目标变量$t$的数据集合，记作：$\{(x^{(1)},t^{(1)}),(x^{(2)
+},t^{(2)}),\dots.,(x^{(N)},t^{(N)})\}$，其中第$i$
+个变量写为$(x^{(i)},t^{(i)})$，这里为了与下面多变量进行区别，用上标来表示第几个实例。新的$x$的预测值为$\hat{t}$。顾名思义，线性回归也就是说$t$与$x$之间有线性关系，即目标值是输入值的线性组合。单变量线性回归的模型假设(hypothesis) 为：</p>
+<p>\begin{equation}
+\hat{t}(x)=\theta_{0} + \theta_{1} x
+\end{equation}</p>
+<p>其中，$x$为模型输入变量，$\hat{t}$为模型预测的目标变量值的近似，$ \theta=(\theta_{0},\theta_{1})^T$为模型参数</p>
+<p>下面我们的目标就是如何求解模型中的参数来确定模型。直观上衡量模型好坏就是输出变量$\hat t$与目标变量$t$相差的程度，两者越接近，则越能反映$t$与$x$之间的关系，所以可以使用平方损失函数(squared loss function）作为求解模型的参数的优化目标函数，如下：</p>
+<p>\begin{equation}
+\mathbb E=\frac{1}{2}\sum_{n=1}^{N}\{t^{(n)}-\hat{t}_\theta(x)\}^2
+\label{ls_error}
+\end{equation}</p>
+<p>根据公式的数学意义我们可以看到，$\mathbb E$值越小，假设越好，这种方法就是很常见的<strong>最小二乘法</strong> 。下面的工作就是最小化$\mathbb
+E$来得到最优的参数值$ \theta^*$。
+现在我们对线性模型有了一个比较直观的印象，知道了什么是线性模型，得到一个优化的目标函数求解参数。这也是机器学习的一般过程：提出模型，根据假设得到一个最优化问题，
+求解最优化参数，最后评估模型。下面看一个简单的例子：</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> 
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span>  <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">linear_model</span> <span class="k">as</span> <span class="n">lm</span>
+<span class="n">figsize</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="c">#generate data</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">20</span> <span class="c">#data size</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="mi">6</span> <span class="o">-</span> <span class="mi">3</span> 
+<span class="n">y</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="s">&#39;reg.npz&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+<span class="n">var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;reg.npz&#39;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">var</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">var</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span>
+<span class="c">#predict the data</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span> <span class="c"># a wrap of scipy.linalg.lstsq</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">),</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">T</span> 
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="c">#plot </span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;--&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y_pred</span><span class="p">,</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;g&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="/images/c_1_0.png" /></p>
+<h4>多变量线性回归模型</h4>
+<p>下面来看一下多变量的线性回归模型：已知含有$N$个观测变量$\mathbf x$，以及对应的目标变量$t$的数据集合，记作：$\{(\mathbf
+x^{(1)},t^{(1)}),(\mathbf x^{(2)},t^{(2)}),\dots.,(\mathbf
+x^{(N)},t^{(N)})\}$,其中第$i$个变量写为$(\mathbf x^{(i)},t^{(i)})$，新的$\mathbf x$
+的预测值$\hat{t}$。 多变量线性回归的模型假设为：</p>
+<p>\begin{eqnarray}
+\hat{t}&amp;=&amp; \theta_{0}+\theta_{1}x_{1}+\theta_{2}x_{2}+\dots+\theta_{D}*x_{D}\
+\nonumber &amp;=&amp;  {\theta^{T}}\mathbf x
+\label{mullr}
+\end{eqnarray}</p>
+<p>其中，$\mathbf x=(x_0,x_1,x_2,\dots,x_D)^{T}$为模型输入向量，$\hat{t}$为模型输出向量，
+$ \theta=(\theta_{0},\theta_{1},\dots,\theta_D)$为参数，$D$为特征向量的维数。可以看到模型是关于输入$\mathbf x$ 和参数$
+\theta$ 的线性函数。这样把$N$个观测变量$\mathbf x$的数据集收集在一个矩阵中$ \mathbf X$中，记作：</p>
+<p>\begin{equation}
+\label{xmat}
+    \mathbf X  =
+\left(
+  \begin{array}{cccc}
+  \mathbf x_1^1 &amp; \mathbf x_2^1 &amp; \dots &amp; \mathbf x_D^1 \\
+\mathbf x_1^2 &amp; \mathbf x_2^2 &amp; \dots &amp; \mathbf x_D^2 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\mathbf x_1^N &amp; \mathbf x_2^N &amp; \dots &amp; \mathbf x_D^N
+  \end{array}
+\right)
+ =
+ \left(
+  \begin{array}{cccc}
+1 &amp; \mathbf x_1^1 &amp; \dots &amp; \mathbf x_D^1 \\
+1 &amp; \mathbf x_1^2 &amp; \dots &amp; \mathbf x_D^2\\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+1 &amp; \mathbf x_1^N &amp; \dots &amp; \mathbf x_D^N
+  \end{array}
+\right)
+\end{equation}</p>
+<p>矩阵中每一列代表一维的特征，每一行代表一个实例，行数代表了实例数，列数代表特征维数。当然也不一定使用这种方式来表示数据集，也完全可以用该矩阵的转置来表示，不过这
+种表示是一种常用的表示，Matlab中就是用这种方式来表示的，所以使用这种表示可以更容易的使用matlab中的库函数求解一些统计数字，比如方差，均值等。</p>
+<h4>多变量线性基函数回归模型</h4>
+<p>对模型引入“基函数”，这样模型仅是相对于参数的线性模型，而不是相对于输入的线性模型，从而使模型增强。原来$t$与$\mathbf
+x$是只能是线性关系，引入基函数后，$t$与$\mathbf x$是非线性的情况也可以做处理了。模型假设如下：</p>
+<p>\begin{equation}
+\hat{t}= \theta_{0}+\theta_{1}\phi_{1}(\mathbf
+x)+\dots+\theta_{M}\phi_{M}(\mathbf x)
+\label{mulvar_lbm}
+\end{equation}</p>
+<p>我们可以看到，通过引入“基函数”，参数数目由$D$变成了$M$，基函数的作用就是使输入空间变到了另外一个空间。
+假设用向量表示形式为：</p>
+<p>\begin{equation}
+\hat{t}= \theta^{T} \phi(\mathbf x)
+ \label{mulvar_lbm_vec}
+\end{equation}</p>
+<p>其中，$ \theta=(\theta_0,\theta_1,\dots,\theta_M)$，$ \phi=(1,\phi_1,\dots,\phi_M)$。
+在理解“基函数”的作用的过程中，可能会出现问题。这里我们看一下基函数的作用：
+ 由前面基函数的定义，它是将整个变量$\mathbf x$，一个向量转化为一个标量(在wikipedia上的模型与我们这里的模型有些不同)。在实际的模式识别应用
+中，我们会对原始的数据进行一些预处理或是特征提取，原始的数据可以看做$\mathbf x$，而处理后的数据看做$\phi(\mathbf x)$。
+ 实际处理问题时怎么对原始数据进行处理时非常灵活的。基函数的选取对于我们模型的讨论没有影响，所以后面我们将 $\phi(\mathbf x)=\mathbf
+x$来进行讨论。</p>
+<p>下面要关注的就是如何得到最优的参数$ \theta^*$，下面就用最大似然估计方法来求解模型中的参数。</p>
+<h4>最大似然估计</h4>
+<p>在第二章中，对最大似然估计的原理已经做了介绍。下面看一下用最大似然估计来估计多变量线性回归模型中的参数。回归问题是一个典型的监督学习问题，使用最大似然估计，首先要确定的是$p(t|\mathbf x, \theta)$的条件分布。假设目标变量与模型预测变量之间存在噪声，两者关系如下：</p>
+<p>\begin{equation}
+t=\hat{t}+\epsilon
+\label{tarvar}
+\end{equation}</p>
+<p>其中，$\epsilon$为噪声值，假设其为高斯噪声，符合高斯分布$\mathcal
+N(\epsilon|0,\beta^{-1})$。那么$t$条件分布的密度函数为$p(t|\mathbf x, \theta)$：</p>
+<p>\begin{equation}
+p(t|\mathbf x, \theta,\beta)=\mathcal N(t|\hat{t},\beta^{-1})
+\label{target}
+\end{equation}</p>
+<p>已知训练集的特征变量集合为$\mathbf X=\{\mathbf x^1,\mathbf x^2,\dots,\mathbf
+x^N\}$,对应的目标值为：$\mathbf
+t=(t^1,t^2,\dots,t^N)$。假定$N$个观测变量符合独立同分布(i.i.d.)，则似然函数如下：</p>
+<p>\begin{equation}
+p(\mathbf t|\mathbf X, \theta,\beta)=\prod_{n=1}^N\mathcal
+N(t^{(n)}|\hat{t}^{(n)},\beta^{-1})
+\label{likelihood}
+\end{equation}</p>
+<p>为了计算方便，取对数，得到对数似然函数，</p>
+<p>\begin{eqnarray}
+  \ln p(\mathbf t|\mathbf X, \theta,\beta)  &amp;=&amp; \sum_{n=1}^N \ln\mathcal
+N(t^{(n)}|\hat{t}^{(n)},\beta^{-1}) \\
+   &amp;=&amp; \sum_{n=1}^N \ln\mathcal N(t^{(n)}| \theta^{T}\mathbf x^{(n)},\beta^{-1})
+\\
+   &amp;=&amp;
+\frac{N}{2}\ln\beta-\frac{N}{2}\ln2\pi-\frac{\beta}{2}\sum_{n=1}^{N}\{t^{(n)}-
+\theta^{T} \mathbf x^{(n)}\}^2
+\end{eqnarray}</p>
+<p>下面要做的就是最优化参数$\beta, \theta$使得似然函数取最大值，这就是最大似然方法的含义。等价的我们也可以最小化似然函数的相反数(negative likelihood function,NLL)，则</p>
+<p>\begin{equation}\label{NLL}
+  NLL( \theta) = -  \ln p(\mathbf t|\mathbf X, \theta,\beta)
+\end{equation}</p>
+<p>可以看出式子的第三部分与最小平方和误差函数形式是一致的，最小平方和误差函数形式如下：</p>
+<p>\begin{equation}\label{sumsquare}
+  \mathbb E=\frac{1}{2}\sum_{n=1}^{N}\{t^{(n)}- \mathbf x^{(n)} \theta\}^2
+\end{equation}</p>
+<p>这也从概率的角度解释了最小平方误差函数。下面看一下最优化似然函数的方法：解析法(Normal Equation)和数值计算方法，例如梯度下降(gradient
+descent)，随机梯度下降(stochastic gradient descent)。</p>
+<h4>解析法(Normal Equation)}</h4>
+<p>首先来看以下上面式子关于$\beta,\theta$ 的导数。上式关于$\beta$
+的一次函数，关于$\theta$的二次函数，可以采用求导的方法来得到一个最大值。分别就似然函数相对于参数$\theta,\beta$的偏导数：</p>
+<p>\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+\frac{\partial}{\partial \theta}\ln(p) &amp;=&amp;
+\frac{\beta}{2}\sum_{n=1}^{N}\{(t^{(n)} - \theta^{T} \mathbf x^{(n)})(\mathbf
+x^{(n)})\} \
+   &amp;=&amp; \frac{\beta}{2} \mathbf X^T( \mathbf t-  \mathbf X  \theta)
+\end{eqnarray}</p>
+<p>\begin{equation}
+\frac{\partial}{\beta}\ln(p) =
+\frac{N}{2\beta}-\frac{1}{2}\sum_{n=1}^{N}\{t^{(n)}- \theta^{T}\mathbf
+x^{(n)}\}^2
+\end{equation}</p>
+<p>然后让表达式都为0,得到一个二元方程组。解这个二元方程组，得到使最大的参数
+$\theta_{ml},\beta_{ml}$。对于$\theta$可以得到等式，</p>
+<p>\begin{equation}
+  \mathbf X^T\mathbf X  \theta =\mathbf X^T\mathbf t
+\end{equation}</p>
+<p>上面的等式叫做正规方程(norm equation)。通过上面的式子可以看到，可以很容易使用矩阵计算，求出$\theta$的封闭解，结果如下：</p>
+<p>\begin{equation}\label{ana-solution}
+   \theta_{ml}=(  \mathbf X^{T}  \mathbf X)^{-1}\mathbf X^{T}  \mathbf t
+\end{equation}</p>
+<p>其中：$\mathbf X^{\dag} =(\mathbf X^{T}\mathbf X)^{-1}\mathbf X^{T}$是矩阵$\mathbf
+X$的伪逆(Moore-Penrose pesudo-inverse)。这个式子比较重要，这里注意两个问题：</p>
+<ul>
+<li>
+<p>解是否存在。通过上面式子可以看到，要求出$(\mathbf X^{T}\mathbf X)^{-1}$，则要求$\mathbf X^{T}\mathbf
+X$必须是满秩的。因为$\mathbf X$是一个$D\times m$维的矩阵，所以$\mathbf X^{T}\mathbf X$是$D\times
+D$维的矩阵，所以必须要求$\mathbf X^{T}\mathbf X$的秩是$D$，所以$\mathbf X$的秩是$D$</p>
+</li>
+<li>
+<p>计算复杂度问题。上面的等式要进行三次矩阵乘法运算，一次矩阵求逆运算，时间复杂度是$O(mD^2+m^2D+D^3)$，。所以当特征向量的维度很大或是数据
+集很大时，对矩阵的乘法操作和求逆操作。其中，大部分矩阵乘法操作的时间复杂度是$O(n^{(2+d)})$，求逆运算的时间复杂度是$O(n^{(2+d)})$。</p>
+</li>
+</ul>
+<p>下面看一个简单的例子：</p>
+<div class="highlight"><pre><span class="n">var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;reg.npz&#39;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">var</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">var</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">T</span> 
+<span class="c">#implement least square algorithm</span>
+<span class="n">theta_best</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">theta_best</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;--&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y_pred</span><span class="p">,</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;g&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="/images/c_3_0.png" /></p>
+<h4>梯度下降(Greadient Descent)</h4>
+<p>在上面的分析中，使用解析的方法直接求解，对于大数据来说是非常耗时的，所以可以采用数值分析的技术来优化目标函数，从而提高程序的可扩展性。本节讨论梯度下降算法。梯度
+下降算法基于函数在某点$x$ 处可微，那么函数在$x$
+处沿着梯度相反的方向下降最快的原理来寻找最优的参数值。在机器学习算法中，最小化的目标函数通常具有下面的形式：</p>
+<p>\begin{equation}
+\mathbf{J}(\theta)=\sum_{n=1}^{N}\mathbf{J}_i(\theta)
+\label{obj_gen}
+\end{equation}</p>
+<p>梯度下降算法的过程很简单：首先选取一个初始的参数值$ \theta= \theta_0$，然后使用下面的公式不断迭代，更新参数$ \theta$：</p>
+<p>\begin{equation}
+  \theta =  \theta - \eta\bigtriangledown \mathbf{J}( \theta) =
+\theta-\eta\sum_{n=1}^{N}\bigtriangledown \mathbf{J}_i( \theta)
+\label{gradient}
+\end{equation}</p>
+<p>其中，$\eta$称为学习速率，$\eta&gt;0$。在进行梯度下降的时候需要注意的三个地方是:</p>
+<ul>
+<li>归一化：对训练数据进行归一化，可以提高学习的速度，减少迭代次数。</li>
+<li>学习过程的曲线：可以通过观察每次的迭代的目标函数值来观察是否收敛。</li>
+<li>学习速率的选择：可以按照$(...,10^{-5},10^{-4},10^{-3},10^{-2},10^{-1},1,....)$来进行选择。当不收
+敛的时候减少$\eta$的值，通常按照$3$的倍数减少。</li>
+</ul>
+<p>使用梯度下降算法来求解$NLL( \theta)$，则迭代公式为：</p>
+<p>\begin{equation}\label{grad-iter}
+   \theta = \theta + \eta \sum_{n=1}^{N}\{(t^{(n)} - \theta^{T} \mathbf
+x^{(n)})(\mathbf x^{(n)})\}
+\end{equation}
+下面是实现梯度的代码：</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">train_with_gd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta0</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">):</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">theta0</span>
+    <span class="nb">iter</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">cost1</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">theta</span> <span class="o">+</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+        <span class="n">cost2</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">cost1</span><span class="o">-</span><span class="n">cost2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">epsilon</span> <span class="ow">or</span> <span class="nb">iter</span> <span class="o">&gt;</span> <span class="n">maxiter</span><span class="p">:</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="nb">iter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c">#print &#39;Iteration: %d, Cost: %f&#39; %(iter, cost2)</span>
+    <span class="k">return</span> <span class="n">theta</span>
+
+
+<span class="n">var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;reg.npz&#39;</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">var</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">var</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span>
+
+<span class="c">#predict the data</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+<span class="n">theta0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">eta</span> <span class="o">=</span> <span class="mf">0.005</span>
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1e-6</span> 
+<span class="n">maxiter</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">theta_best</span> <span class="o">=</span> <span class="n">train_with_gd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta0</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">theta_best</span><span class="p">)</span>
+<span class="c">#plot </span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;--&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y_pred</span><span class="p">,</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;g&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="/images/c_5_0.png" /></p>
+<h4>随机梯度下降(Stochastic Gradient Descent)</h4>
+<p>上面的梯度下降算法是一种batch方法，一次迭代的时候使用了所有的数据。随机梯度下降的迭代过程近似为下面形式：</p>
+<p>\begin{equation}
+ \theta   =  \theta-\eta \bigtriangledown \mathbf{J}_i( \theta)
+\label{sto_gradient}
+\end{equation}</p>
+<p>这时候一次迭代只需要一个数据即可，所以是一种在线的方法。算法过程如下：</p>
+<div class="highlight"><pre><span class="err">初始化参数向量；</span>
+
+<span class="err">重复下面操作，直到收敛；</span>
+
+   <span class="err">对训练集进行“洗牌”；</span>
+
+   <span class="n">For</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="n">to</span> <span class="n">N</span><span class="o">:</span>
+
+       <span class="err">使用梯度更新参数；</span>
+</pre></div>
+
+
+<p>其中，“洗牌”的意思就是打乱数据集原来数据的顺序。其中比较常用的洗牌算法有Fisher–Yates洗牌等。与梯度下降类似，学习速率的选择对于算法的结果又很重要的
+影响。</p>
+<p>使用随机梯度下降算法来求解$NLL( \theta)$，则迭代公式为：</p>
+<p>\begin{equation}
+   \theta = \theta + \eta  (t^{(n)} - \theta^ T \mathbf x ^{(n)})(\mathbf
+x^{(n)})
+\end{equation}</p>
+<p>该算法被称作最小均方(least-mean-squares,LMS)算法。</p>
+<p>与梯度下降算法相比，随机梯度下降不能保证一定会收敛到局部极小值，但是由于随机下降在身的特点，在对于大规模机器学习有很好的性能，例如具有良好的泛化能力，处理大数据
+来说计算效率相对梯度下降更好，越来越受到机器学习社区的重视。在神经网络训练中，随机梯度下降是常用方法。</p>
+<h4>最小二乘的几何解释</h4>
+<p>把机器学习模型和空间集合联系起来，在机器学习中是一种常用的思考方式，比如流行学习(manifold
+learning)。这里简单看一下最小二乘的集合解释。模型的预测值与输入的关系有如下关系：</p>
+<p>\begin{equation}\label{lr-mat}
+  \hat{\mathbf t} = \mathbf X  \theta
+\end{equation}</p>
+<p>根据线性代数的知识知道，预测值$\hat{\mathbf t}$可以看作矩阵$\mathbf
+X$的$N$维列空间$\mathcal{S}=Span\{\tilde{\mathbf x_1},\tilde{\mathbf
+x_2},...,\tilde{\mathbf x_D}\}$中的一个点，是由这矩阵的$D$个列向量线性组合得到的。目标是找一个$\hat{\mathbf
+t}$与$ \mathbf t$的距离最小，即：</p>
+<p>\begin{equation}\label{pro}
+  arg\min\|\mathbf t-\hat{\mathbf t}\|_2^2
+\end{equation}</p>
+<p>使$\mathbf t-\hat{\mathbf t}$与所有的列向量都正交，即使得$\hat{\mathbf t}$是$\mathbf
+t$在$\mathcal{S}$的正交投影即可。所以$\mathbf X^T(\mathbf X  \theta-\mathbf
+t)=\mathbf{0}$，从而可以得到正规方程，这就从几何上解释了最小二乘方法。</p>
+<h3>正则化最小二乘(Regularized Least Square)</h3>
+<p>根据第二章的知识知道，使用最小二乘(最大似然方法)进行求解，可能出现过拟合的问题，可以使用正则化方法(Regularization)添加一个惩罚项来拓展线性模型
+。 数学公式如下：</p>
+<p>\begin{equation}\label{regularized-lms}
+  \mathbb E=\frac{1}{2}\sum_{n=1}^{M}\{t^{(n)}- \mathbf x^{(n)} \theta\}^2 +
+\frac{1}{2}\lambda \sum_{j=1}^{D}|\theta_j|^q
+\end{equation}</p>
+<p>常见的有两种：Ridge 和 Lasso。其中，对于Ridge方法来说，$q=2$；对于Lasso方法来说，$q=1$，$\lambda$是用来平衡这两项的参数
+。可以看出两种方法只是惩罚项不同，Ridge方法添加了一个$\ell_2$ 惩罚项，而Lasso方法则添加了一个$\ell_1$
+惩罚项。不同$q$对应的正则项示意图，如下：</p>
+<p><img src="/images/3-4.png", height=200pt, width=800pt></p>
+<p>Lasso有一个很好的性质就是它可以得出一个稀疏模型（sparse model），参数中很多成分都变成$0$，从而相应的基函数就不再起作用。尤其对高维数据来说，
+如果模型是稀疏的，会大大的减少计算量。关于为什么会Lasso容易产生稀疏解，有一个直观的解释。</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">cost_fun</span><span class="p">(</span><span class="n">W</span><span class="p">):</span>
+    <span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="p">(</span><span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">E</span>
+
+<span class="n">C</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">C</span><span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="n">w</span><span class="p">),</span><span class="s">&#39;k--&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&#39;l1 norm&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="o">-</span><span class="p">(</span><span class="n">C</span><span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="n">w</span><span class="p">)),</span><span class="s">&#39;k--&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">C</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span><span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;l2 norm&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">C</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">Sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span><span class="mf">1.5</span><span class="p">],[</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+<span class="n">w0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">w1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">w0</span><span class="p">,</span> <span class="n">w1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">w0</span><span class="p">,</span> <span class="n">w1</span><span class="p">)</span>
+<span class="n">W</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">w1</span><span class="o">.</span><span class="n">shape</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">W</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">w0</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">],</span> <span class="n">w1</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]])</span>  
+<span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">W</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">cost_fun</span><span class="p">(</span><span class="n">W</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">w0</span><span class="p">,</span> <span class="n">w1</span><span class="p">,</span> <span class="n">z</span><span class="p">,[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.4</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="/images/c_7_0.png" /></p>
+<p>对最小平方和误差函数添加一个正则项，根据拉普拉斯乘数法，就相对的添加了一个约束项，则满足条件的解都应满足约束信息，所以从图中可以看出Lasso更容易产生稀疏解，
+因为它与目标函数相交更容易集中在边角上。</p>
+<p>还可以把$\ell_2$ 惩罚项，$\ell_1$ 惩罚项都添加到损失函数上进行惩罚，这种方法称为“Elastic Net”，数学公式如下：</p>
+<p>\begin{equation}\label{elasticnet}
+\mathbb E=\frac{1}{2}\sum_{n=1}^{M}\{t^{(n)}- \mathbf x^{(n)} \theta\}^2 +
+\frac{1}{2}\lambda_1 \sum_{j=1}^{D}|\theta_j|+\frac{1}{2}\lambda_2
+\sum_{j=1}^{D}\theta_j^2
+\end{equation}</p>
+<p>前面已经知道最小二乘法等价于最大似然估计，根据在第二章第(8)节的讨论，最大后验估计的目标函数就是在最大似然估计后面添加一个参数的先验，可以看出乘法的最小二乘法
+就等价于最大后验估计。Ridge方法添加了$\ell_2$
+惩罚项，因为高斯分布是一个指数平方函数，所以可以看出在Ridge方法等价于先验是高斯，条件分布也是高斯下的最大后验估计。下面看一下具体的推导。假设$p(
+\theta)=\mathcal{N}( \theta|0,\alpha^{-1}\mathbf{I})$，则</p>
+<p>\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+  \nonumber \mathbf{J}&amp;=&amp; arg\max_\theta \sum_{i=1}^{m}\ln p(\mathbf x_i|
+\theta) + \ln p( \theta)\\
+  &amp;=&amp; -\frac{\beta}{2}\sum_{n=1}^{N}\{t^{(n)}- \theta^{T} \mathbf x^{(n)}\}^2
+-\frac{\alpha}{2} \theta^T \theta + const
+\end{eqnarray}
+可以看出上面的式子等价于正则化的最小二乘法，对应的惩罚项系数是$\lambda=\frac{\alpha}{\beta}$。同样的道理，可以知道Lasso方法的
+先验分布是拉普拉斯分布。</p>
+<h3>偏差-方差平衡(Bias-variance Tradeoff)</h3>
+<p>我们已经知道最大似然估计在数据集小，模型复杂选取复杂时有严重的过拟合现象。通过添加惩罚项，可以在一定程度上防止过拟合，但是随之而来的问题就是如何选取正则化参数$
+\lambda$，使得模型能比较好的泛化能力。这其实涉及到了模型复杂度的问题，要具有好的泛化能力，需要模型具有恰当的复杂度。模型复杂度的一种理解方式是<strong>偏差-
+方差平衡(Bias-variance Tradeoff)}</strong>。下面以回归模型讨论偏差-方差平衡，不过其他问题的思想是一致的。期望平均损失可以写成下面的形式：</p>
+<p>\begin{equation}
+  \mathbb E[L] = \mathbb E_{p(\mathbf x)}[\{y(\mathbf x)-h(\mathbf
+x)\}^2]+\mathbb E_{p(\mathbf x)}[\{h(\mathbf x)-t\}^2]
+\end{equation}</p>
+<p>从上面看出，只有第一部分与模型的选取有关，如果用带参数的函数$y(\mathbf x, \theta)$来近似真实的函数$h(\mathbf
+x)$，而且在模型训练时知道的是数据集$\mathbf D$，则</p>
+<p>\begin{align}
+   \mathbb E_{\mathbf D}[\{y(\mathbf x;\mathbf D)-h(\mathbf x)\}^2] = &amp;
+\mathbb E_{\mathbf D}[\{y(\mathbf x;\mathbf D)-\mathbb E_{\mathbf D}[y(\mathbf
+x;\mathbf D)]+\mathbb E_{\mathbf D}[y(\mathbf x;\mathbf D)]-h(\mathbf x)\}^2]
+\notag \\ = &amp;
+   \begin{aligned}[t]
+   \mathbb E_{\mathbf D}[\{y(\mathbf x;\mathbf D)-\mathbb E_{\mathbf
+D}[y(\mathbf x;\mathbf D)]\}^2]+\mathbb E_{\mathbf D}[\{\mathbb E_{\mathbf
+D}[y(\mathbf x;\mathbf D)]-h(\mathbf x)\}^2]\\
+   +2\mathbb E_{\mathbf D}[\{y(\mathbf x;\mathbf D)-\mathbb E_{\mathbf
+D}[y(\mathbf x;\mathbf D)]\}\{\mathbb E_{\mathbf D}[y(\mathbf x;\mathbf
+D)]-h(\mathbf x)\}]\\
+     \end{aligned}
+    \notag \\
+   =&amp;  \mathbb E_{\mathbf D}[\{y(\mathbf x;\mathbf D)-\mathbb E_{\mathbf
+D}[y(\mathbf x;\mathbf D)]\}^2]+\{\mathbb E_{\mathbf D}[y(\mathbf x;\mathbf
+D)]-h(\mathbf x)\}^2
+\end{align}</p>
+<p>从上面的式子看以看出期望平均损失由两项组成：第一项称为方差(variance)是在不同数据集上的结果与在这些数据集上的平均值之间的变化程度，反映了模型对数据集的
+敏感程度；第二项是偏差(bias)是在数据集上的平均值与真实值之间的差距。可以写成下面的等式：</p>
+<p>\begin{equation}
+  MSE = Variance + Bias^2
+\end{equation}</p>
+<p>通常一个灵活或是说是复杂的模型，方差很大，变差很小，一个简单的模型，偏差很大，方差很小，这说明一个好的模型应该是取得偏差和方差的一个平衡，使得它们的和最小
+，这叫做偏差-方差平衡。</p>
+<p>下面看一个具体的例子。我们从函数$\cos(2\pi x)$独立的生成100个数据集$\mathbf D_1,\mathbf D_2,...,\mathbf
+D_{100}$，每个数据集$\mathbf D_i$包含$25$个点，对所有的这些数据添加高斯噪声，然后使用正则化的基函数线性回归模型进行拟合，使用的基函数是
+高斯基函数，为了方便表示，图中的结果使用了$20$个数据集。图中左半部分的三幅图可以反映出方差的情况，右半部分的图可以反映出偏差情况。从图中可以观察到，在最上面
+的两幅图中，$\lambda$较大，此时方差较小，但是偏差较大，此时的模型太简单，出现了拟合不足(underfitting)的现象，最下边的两幅图，$\lambda$较大，此时方差较大，但是偏差较小，此时的模型太复杂，出现了过拟合(overfitting)的现象，中间的两幅图反映了方差与偏差取得一个平衡时的情况。最下面的情况中，平均起来的结果与真实情况最接近，但是这样在实际的应用中不是最好的，这是由于在实际的问题中，我们只有1个数据集，而且这个数据集相对于总体来说，还是很小的（可以回忆在第一章第一节中的讨论）。一般来说，高的偏差，代表着模型拟合不足，而高的方差，代表着过拟合。使用不同的正则化系数的正则化线性回归模型结果：从上到下的$
+\lambda$逐渐减少，模型变得逐渐复杂。</p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">linear_model</span> <span class="k">as</span> <span class="n">lm</span>
+
+<span class="n">figsize</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">gendata</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
+
+<span class="k">def</span> <span class="nf">transdata</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;work for only for 1-dims of point in X&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  
+    <span class="n">X_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">m</span><span class="p">))</span>
+    <span class="c">#print c.shape</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">m</span><span class="p">):</span> <span class="c"># first is fixed to 1</span>
+        <span class="n">X_t</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">X</span><span class="o">-</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X_t</span><span class="p">,</span> <span class="n">s</span> <span class="p">,</span> <span class="n">c</span>
+
+<span class="n">lambs</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)]</span>
+<span class="n">n_dataset</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">n_showset</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">d</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">nfig</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">lamb</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lambs</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lambs</span><span class="p">),</span><span class="mi">2</span><span class="p">,</span><span class="n">nfig</span><span class="p">)</span>
+    <span class="n">nfig</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_dataset</span><span class="p">):</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">gendata</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">transdata</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">lm</span><span class="o">.</span><span class="n">Ridge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">lamb</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">para_best</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">coef_</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">transdata</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">c</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">para_best</span><span class="p">)</span>
+        <span class="n">avg</span> <span class="o">=</span> <span class="n">avg</span> <span class="o">+</span> <span class="n">y_pred</span>
+        <span class="k">if</span> <span class="n">j</span><span class="o">&lt;=</span><span class="n">n_showset</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y_pred</span><span class="p">,</span><span class="s">&#39;g&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lambs</span><span class="p">),</span><span class="mi">2</span><span class="p">,</span><span class="n">nfig</span><span class="p">)</span>
+    <span class="n">nfig</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">avg</span><span class="o">/</span><span class="n">n_dataset</span><span class="p">,</span><span class="s">&#39;g&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="/images/c_9_0.png" /></p>
+<p>下面就看一下怎么来检测到高方差或是偏差，从而来改进模型，提高性能。学习曲线(learning curve)是检测高偏差或是高方差的一种有效方式。在学习曲线中，横
+坐标是数据集的大小，纵坐标是目标函数的值。为了检测到模型是否过拟合或是拟合不足，需要分别画出在训练集和验证集上的学习曲线，然后通过观察学习曲线，得到一个比较直观
+的结论。下面看一个简单的例子，数据集包含9个点，特征维数是1。使用线性拟合和多项式拟合如图中的数据集中的点，结果如下图。</p>
+<div class="highlight"><pre><span class="n">figsize</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">x</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span><span class="n">scale</span><span class="o">=.</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">p1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">p9</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
+
+<span class="n">xp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="s">&#39;ro&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span><span class="n">p1</span><span class="p">(</span><span class="n">xp</span><span class="p">),</span><span class="s">&#39;r-&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;degree=1&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="s">&#39;ro&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span><span class="n">p3</span><span class="p">(</span><span class="n">xp</span><span class="p">),</span><span class="s">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;degree=3&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="s">&#39;ro&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;degree=9&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span><span class="n">p9</span><span class="p">(</span><span class="n">xp</span><span class="p">),</span><span class="s">&#39;g--&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="/images/c_11_0.png" /></p>
+<p>多项式拟合结果图，红色圆点代表数据集中的点，从左到右多项式拟合的度数分别为1,3,9。从图中可以看出，度数为1时，出现了拟合不足的现象；而度数为9时则出现了过拟
+合的现象。</p>
+<p>但是在实际的应用中，由于问题通常很复杂，特征维度很高，我们几乎不可能画出数据点，然后再画出模型，使用上面的方法观察模型的好坏。不过我们可以使用学习曲线来观察模型
+是否具有比较好的泛化能力，即能取得偏差-方差的一个比较好的平衡。</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="k">def</span> <span class="nf">cost_fun</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">y_pred</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">y</span><span class="o">-</span><span class="n">y_pred</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">learning_curve</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span> <span class="n">cost_fun</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">error_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">x_train</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">y_train</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span><span class="c">#avoid warning output </span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span><span class="n">degree</span><span class="p">))</span> 
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">p</span><span class="p">(</span><span class="n">x_train</span><span class="p">)</span>
+        <span class="n">error</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cost_fun</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+        <span class="n">y_valpred</span> <span class="o">=</span> <span class="n">p</span><span class="p">(</span><span class="n">x_val</span><span class="p">)</span>
+        <span class="n">error_val</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cost_fun</span><span class="p">(</span><span class="n">y_val</span><span class="p">,</span> <span class="n">y_valpred</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">error</span><span class="p">,</span> <span class="n">error_val</span>
+
+<span class="c">#np.random.seed(0)</span>
+<span class="n">degrees</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span>
+<span class="c">#f = lambda x: np.sin(2*np.pi*x)</span>
+<span class="c">#x = np.random.random(13)</span>
+<span class="c">#y = f(x) + np.random.normal(size=13,scale=.2)</span>
+<span class="c">#np.savez(&#39;learn_curve.npz&#39;,x=x,y=y)</span>
+<span class="n">npz_file</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s">&#39;learn_curve.npz&#39;</span><span class="p">)</span> <span class="c"># fix dataset in order the image is consistency.</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">npz_file</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">npz_file</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">10</span><span class="p">:]</span>
+<span class="n">y1</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span>
+<span class="n">y2</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">10</span><span class="p">:]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="s">&#39;ro&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&#39;training points&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span><span class="n">y2</span><span class="p">,</span><span class="s">&#39;bo&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&#39;validate points&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">degree</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">degrees</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">degrees</span><span class="p">),</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">error</span><span class="p">,</span> <span class="n">error_val</span> <span class="o">=</span> <span class="n">learning_curve</span><span class="p">(</span><span class="n">degree</span><span class="p">,</span><span class="n">cost_fun</span><span class="p">,</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y2</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">error</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">error</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">error_val</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">error_val</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&#39;degree=</span><span class="si">%d</span><span class="s">&#39;</span><span class="o">%</span><span class="n">degree</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="png" src="/images/c_13_0.png" /></p>
+<p><img alt="png" src="/images/c_13_1.png" /></p>
+<p>上面的模型对应的学习曲线图下面的事宜图所示：从图中可以看出，多项式拟合时，在这个例子中，度数为1的时候，在训练集和测试集上的错误较低，而度数为3,10时，训练集
+的曲线和测试集的曲线最后差别大，训练集很小，测试集很大，此时的方差大，说明出现了过拟合的现象，借助学习曲线成功的观察到了模型的好坏。这个例子还需要注意两点：</p>
+<ul>
+<li>
+<p>当然，在这个例子中，数据点的数目较小，数据很难反映出真实的情况：我们是从$sin(2\pi x)$进行的采样，但是如果只看蓝色的训练点，则很明显用直线更好。</p>
+</li>
+<li>
+<p>从现有的数据中，拿出一部分数据做验证集，可能会使得到的模型很差，尤其是在数据点较少的情况下。</p>
+</li>
+</ul>
+<p>如果通过学习曲线，观测到模型出现了过拟合和欠拟合的现象，应该怎么来调整，使得学习算法取得一个好的性能，从而能够胜任它应该完成的任务呢？通常可以有下面的策略来进行
+调整：</p>
+<ul>
+<li>对于过拟合的模型来说（方差很大），可以通过收集更多的数据或是进行特征选择，或是增大正则化系数来进行调整；</li>
+<li>对于欠拟合的模型来说（偏差很大），单纯收集更多的数据并不会使得模型变得更好，通常需要增加更多有意义的特征，或是减小正则化的系数来进行调整。</li>
+</ul>
+<h3>贝叶斯线性回归(Bayesian Linear Regression)</h3>
+<p>由前面的知识知道，最大似然估计存在过拟合现象，而最大后验估计(正则化最小二乘)则存在选择模型复杂度困难的问题，本节介绍贝叶斯线性回归，可以自动的进行模型的选择。
+由第二章讨论的贝叶斯估计的原理知道，贝叶斯估计首先估计参数的后验分布，然后目标分布对后验分布进行积分（求和），得到预测分布。</p>
+<h4>参数后验分布</h4>
+<p>为了简便，假定参数$\beta$是已知的，先验高斯分布的均值为$0$。使用前面提到的共轭先验分布$p( \theta|\alpha)=\mathcal{N}(
+\theta|0,\alpha^{-1}\mathbf{I})$，似然函数(likelihood) 可以写成
+$
+  p(\mathbf t|\mathbf X, \theta,\beta)= \mathcal N(\mathbf t|\mathbf X
+\theta,\beta^{-1}\mathbf{I})
+$
+，后验分布为，</p>
+<p>\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+  \nonumber  p( \theta|\mathbf X,\mathbf t,\alpha,\beta) &amp;=&amp;  \frac{p(
+\theta|\alpha)p(\mathbf t|\mathbf X, \theta,\beta)}{\int p(
+\theta|\alpha)p(\mathbf t|\mathbf X, \theta,\beta) d  \theta} \\
+    &amp;\propto&amp;  p( \theta|\alpha)p(\mathbf t|\mathbf X, \theta,\beta)
+\end{eqnarray}</p>
+<p>则连个高斯分布的乘积依然为高斯分布，下面通过使用高斯分布指数部分的平方项来确定对应的均值和方差：
+\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+\nonumber \ln p( \theta|\mathbf X,\mathbf t,\alpha,\beta) &amp;\propto&amp; \ln p(
+\theta|\alpha)+ \ln p(\mathbf t|\mathbf X, \theta,\beta)  \\
+\nonumber &amp;=&amp; -\frac{1}{2}( \theta)^T\alpha\mathbf I \theta-\frac{1}{2}(\mathbf
+t-\mathbf X \theta)^T\beta(\mathbf t-\mathbf X \theta)+const\\
+&amp;=&amp; -\frac{1}{2} \theta^T(\alpha\mathbf I+\beta\mathbf X\mathbf X^T) \theta+
+\theta^T\mathbf X^T\beta\mathbf I\mathbf t+const
+\end{eqnarray}</p>
+<p>对一个标准的高斯分布$\mathcal{N}(\mathbf x| \mu,\Sigma)$，指数部分可以写成
+\begin{equation}
+  -\frac{1}{2}(\mathbf x- \mu)^T\Sigma^{-1}(\mathbf x- \mu)=-\frac{1}{2}\mathbf
+x^T\Sigma^{-1}\mathbf x+\mathbf x^T\Sigma^{-1} \mu + const
+\end{equation}</p>
+<p>其中均值与方差为：</p>
+<p>\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+  \mathbf m_{post} &amp;=&amp;  \beta\mathbf S_{post} \mathbf X^T\mathbf t\\
+  \mathbf S_{post} &amp;=&amp; (\alpha\mathbf{I}+\beta\mathbf X\mathbf X^T)^{-1}
+\end{eqnarray}</p>
+<p>所以参数的后验分布为：
+\begin{equation}\label{post}
+  \nonumber  p( \theta|\mathbf X ,\mathbf t,\alpha,\beta) = \mathcal{N}(
+\theta|\mathbf m_{post},\mathbf S_{post})
+\end{equation}</p>
+<p>下面看一个贝叶斯学习的简单例子。使用函数$f(x,\mathbf{a})=a_0+a_1x+\epsilon$生成数据，其中$x\sim
+Uniform(-1,1)$，$\epsilon \sim \mathcal{N}(\epsilon|0,0.04)$。在学习过程中假设超参数$\alpha,\
+beta$是已知的，分别为$\alpha=2,\beta=20$。中分别左边一列是是似然函数，中间一列是参数分布，最右边一列是数据空间，有观测到的数据和从参数分
+布中的采样。在第一行，因为此时没有观察到任何数据，似然函数是空的，由于我们假设的高斯分布的方差是与单位矩阵成正比的(isotropic matrix)，所以从参
+数空间中采样得到的参数在空间中每个方向都有。在第二行中，当观测到第一数据点时(在最右边用蓝色的圆圈表示)，左边似然函数就穿过了该数据点，参数的后验为先验乘以似然
+，即第一行中的参数分布乘以第二行中的似然函数，可以看到此时参数的后验分布变成了“山脊”的形状，与先验有了明显的不同，此时再从参数分布中采样，从第二行的右图中可以
+看到参数在向观测的数据点靠拢。在第三行中，当观测到第二个数据点时，左边表示该点的似然函数穿过了该数据点，参数的后验为先验乘以似然，即第二行中的参数分布乘以第三行
+中的似然函数，可以看到此时参数的后验分布已经变得的相对集中，靠近真实参数（用白色十字号表示），第四行表示观测了20个点后的情况，看以看到此时的后验分布已经变得非
+常集中，而且非常靠近真实的参数。当观测到无穷多个点时，后验分布就会变成以真实参数为中心的一个$\delta$函数。从这个过程可以看出贝叶斯学习的序列化学习特性，
+不断增加的数据，可以改变参数的分布形式，增加对参数的认识。</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> 
+<span class="kn">import</span>  <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span> 
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">lstsq</span><span class="p">,</span> <span class="n">slogdet</span><span class="p">,</span> <span class="n">eig</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">log</span><span class="p">,</span> <span class="n">exp</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+
+<span class="n">figsize</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">w0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.3</span>
+<span class="n">w1</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.3</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">true_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">w0</span><span class="p">,</span> <span class="n">w1</span><span class="p">])</span>
+<span class="n">s</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">;</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mi">25</span>
+
+<span class="k">def</span> <span class="nf">mvn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">Sigma</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;implement PDF for multivariate normal distribution.</span>
+<span class="sd">       Parameters:</span>
+<span class="sd">         - X: n * D matrix</span>
+<span class="sd">         - mu: mean vector</span>
+<span class="sd">         - Sigma: covariance matrix&#39;&#39;&#39;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">mu</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">Xm</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="n">mu</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">logv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Xm</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">lstsq</span><span class="p">(</span><span class="n">Sigma</span><span class="p">,</span> <span class="n">Xm</span><span class="o">.</span><span class="n">T</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">d</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">slogdet</span><span class="p">(</span><span class="n">Sigma</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">logv</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">plot_contour</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">x1</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x1</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">],</span> <span class="n">y1</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]])</span>  
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="mi">256</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">true_w</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">true_w</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s">&#39;w+&#39;</span><span class="p">,</span><span class="n">ms</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">plot_sample_lines</span><span class="p">(</span><span class="n">w0</span><span class="p">,</span><span class="n">w1</span><span class="p">,</span><span class="n">example</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">w0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w0</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">w1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">example</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">example</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">example</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s">&#39;ro&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">bayes_update</span><span class="p">(</span><span class="n">sigma_prior</span><span class="p">,</span> <span class="n">mu_prior</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">sigma_prior</span><span class="p">)</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">sigma_prior</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mu_prior</span><span class="p">)</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span>
+
+<span class="n">mu_prior</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">sigma_prior</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">alpha</span>
+<span class="c"># plot first row</span>
+<span class="n">n_row</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">n_fig</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">n_fig</span><span class="p">)</span>
+<span class="n">n_fig</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="n">post</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="n">mvn</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">mu_prior</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">sigma_prior</span><span class="p">)</span>
+<span class="n">plot_contour</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c">#show sample </span>
+<span class="n">w0</span><span class="p">,</span> <span class="n">w1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mu_prior</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">sigma_prior</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">n_fig</span><span class="p">)</span>
+<span class="n">n_fig</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="n">plot_sample_lines</span><span class="p">(</span><span class="n">w0</span><span class="p">,</span><span class="n">w1</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">n_row</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="c">#show likelihood</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">i</span><span class="o">==</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">n_fig</span><span class="p">)</span>
+        <span class="n">n_fig</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">likelihood</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="n">w</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]])),</span> <span class="n">scale</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">plot_contour</span><span class="p">(</span><span class="n">likelihood</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c">#show posterior</span>
+        <span class="c">#print mu_prior</span>
+        <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">bayes_update</span><span class="p">(</span><span class="n">sigma_prior</span><span class="p">,</span> <span class="n">mu_prior</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]]]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="n">sigma_prior</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="n">mu_prior</span> <span class="o">=</span> <span class="n">mu</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">n_fig</span><span class="p">)</span>
+        <span class="n">n_fig</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">post</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">w</span><span class="p">:</span> <span class="n">mvn</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+        <span class="n">plot_contour</span><span class="p">(</span><span class="n">post</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c">#show sample </span>
+        <span class="n">w0</span><span class="p">,</span> <span class="n">w1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mu</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">sigma</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">n_fig</span><span class="p">)</span>
+        <span class="n">n_fig</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">plot_sample_lines</span><span class="p">(</span><span class="n">w0</span><span class="p">,</span><span class="n">w1</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="n">y</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]]))</span>
+        <span class="n">n_row</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c">#print mu_prior</span>
+        <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">bayes_update</span><span class="p">(</span><span class="n">sigma_prior</span><span class="p">,</span> <span class="n">mu_prior</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]]]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="n">sigma_prior</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="n">mu_prior</span> <span class="o">=</span> <span class="n">mu</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<p><img alt="png" src="/images/c_15_0.png" /></p>
+<h4>预测分布</h4>
+<p>在第二章中的贝叶斯估计中已经讨论过，如何求预测分布：通过对参数后验分布求积分，得到在给定数据情况下，对新数据的条件分布。公式如下：
+\begin{equation}\label{bayesian}
+  p(t|\mathbf x,\mathbf X,\mathbf t) = \int_\theta p(t|\mathbf x,
+\theta,\beta)p( \theta|\mathbf X,\mathbf t,\alpha,\beta)d \theta
+\end{equation}
+可以得到，$ p(t|\mathbf x, \theta,\beta)$与$p( \theta|\mathbf X,\mathbf
+t,\alpha,\beta)$服从高斯分布，参照求解后验分布，两个高斯分布的乘积的依然是一个高斯分布，然后对$
+\theta$求积分，依然为高斯分布，均值与方差如下：</p>
+<p>\begin{eqnarray}
+% \nonumber to remove numbering (before each equation)
+ \mathbf m_{pred} &amp;=&amp;  \mathbf x^T \mathbf m_{post} \\
+  \mathbf S_{pred} &amp;=&amp;  \frac{1}{\beta}+ \mathbf x^T \mathbf S_{post}\mathbf x
+\end{eqnarray}
+所以预测分布为：
+\begin{equation}
+  \nonumber    p(t|\mathbf x,\mathbf x,\mathbf t) = \mathcal N( \theta|\mathbf
+m_{pred},\mathbf S_{pred})
+\end{equation}</p>
+<p>可以看出预测分布的方差包含两部分：（1）数据的噪声$\beta$；（2）参数的方差$\mathbf
+S_{post}$，反映了参数的不确定。在上面小结已经讨论过了，当有新的观测数据的话，后验分布就会变的更加集中，所以一般来说，$\mathbf
+S_{pred}^{N+1} &lt; \mathbf S_{pred}^N$。在$N \rightarrow \infty
+$的极限情况下，方差第二部分就会消失，此时预测分布的方差只是由数据的噪声$\beta$来决定。</p>
+<h3>引用</h3>
+<p>[1]. <a href="https://class.coursera.org/ml-004}">machine learning</a>, Adrew Ng, 2013.</p>
+<p>[2]. <a href="http://en.wikipedia.org/wiki/Rank_(linear_algebra)">linear algebra</a></p>
+<p>[3]. The tradeoffs of large scale learning,  L Bottou, 2007.</p>
+<p>[4] Grinstead and Snell's Introduction to Probability, Peter G. Doyle, 2006.</p>
+<p>[5] Machine Learning: a Probabilistic Perspective, Kevin Patrick Murphy, 2012</p><script type= "text/javascript">
+    if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+        var mathjaxscript = document.createElement('script');
+        mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+        mathjaxscript.type = 'text/javascript';
+        mathjaxscript.src = 'https:' == document.location.protocol
+                ? 'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
+                : 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+        mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+            "MathJax.Hub.Config({" +
+            "    config: ['MMLorHTML.js']," +
+            "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+            "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+            "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+            "    displayAlign: 'center'," +
+            "    displayIndent: '0em'," +
+            "    showMathMenu: true," +
+            "    tex2jax: { " +
+            "        inlineMath: [ ['$','$'] ], " +
+            "        displayMath: [ ['$$','$$'] ]," +
+            "        processEscapes: true," +
+            "        preview: 'TeX'," +
+            "    }, " +
+            "    'HTML-CSS': { " +
+            "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'black ! important'} }" +
+            "    } " +
+            "}); ";
+        (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+    }
+</script>
+
+<section>
+<div class="accordion" id="accordion2">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle disqus-comment-count" data-toggle="collapse" data-parent="#accordion2"
+                href="http://blog.aisbazaar.com/linear_model.html#disqus_thread">
+                Comments
+            </a>
+        </div>
+        <div id="disqus_thread" class="accordion-body collapse">
+            <div class="accordion-inner">
+                <div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'wbdai';
+        var disqus_identifier = 'http://blog.aisbazaar.com/linear_model.html';
+    var disqus_url = 'http://blog.aisbazaar.com/linear_model.html';
+
+    (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+            <aside>
+            <hr/>
+            <nav>
+            <ul class="articles_timeline">
+ 
+                <li class="previous_article">« <a href="http://blog.aisbazaar.com/pr_introduce.html" title="Previous: 概率知识简介">概率知识简介</a></li>
+ 
+                <li class="next_article"><a href="http://blog.aisbazaar.com/lr_model.html" title="Next: logistic Regression 模型">logistic Regression 模型</a> »</li>
+            </ul>
+            </nav>
+            </aside>
+        </div>
+        <section>
+        <div class="span2" style="float:right;font-size:0.9em;">
+ 
+            <h4>Published</h4>
+            <time pubdate="pubdate" datetime="2014-05-02T17:00:00">May 2, 2014</time>
+            <h4>Category</h4>
+            <a class="category-link" href="/categories.html#Machine-Learning-ref">Machine Learning</a> 
+            <h4>Tags</h4>
+            <ul class="list-of-tags tags-in-article"> 
+                <li><a href="/tags.html#Machine-Learning-ref">Machine Learning
+                    <span>4</span>
+</a></li>
+            </ul>
+
+        </div>
+        </section>
+</div>
+</article>
+                </div>
+                <div class="span1"></div>
+            </div>
+        </div>
+    </div>
+<footer>
+<div id="footer">
+    <ul class="footer-content">
+        <li class="elegant-power">Powered by <a href="http://getpelican.com/" title="Pelican Home Page">Pelican</a>. Theme: <a href="http://oncrashreboot.com/pelican-elegant" title="Theme Elegant Home Page">Elegant</a> by <a href="http://oncrashreboot.com" title="Talha Mansoor Home Page">Talha Mansoor</a></li>
+    </ul>
+</div>
+</footer>            <script src="http://code.jquery.com/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script>
+            function validateForm(query)
+            {
+                return (query.length > 0);
+            }
+        </script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'wbdai';
+
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+    </script>
+        <script  language="javascript" type="text/javascript">
+            function uncollapse() {
+                var hash_str = window.location.hash;
+                if (window.location.hash.match(/^#comment-\d+$/))
+                {
+                    var hash_str = '#disqus_thread';
+                }
+                $(hash_str).collapse({
+                    toggle: true
+                    })
+            }
+        </script>
+
+        <script type="text/javascript" language="JavaScript">
+            uncollapse(); 
+        </script>
+    </body>
+</html>
