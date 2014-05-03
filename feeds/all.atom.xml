@@ -117,29 +117,26 @@ X^T(\mathbf y-\mathbf t)\\
   \mathbf{z} =\mathbf X\theta-\mathbf{S}^{-1}(\mathbf y-\mathbf t)
 \end{equation}&lt;/p&gt;
 &lt;h4&gt;优化代码&lt;/h4&gt;
-&lt;p&gt;对于快速构建机器学习算法，可以使用现成的优化类库\footnote{在coursera的机器学习课程，Andrew
-Ng建议新手使用现成的优化函数，因为数值优化可能存在大量的技巧。}，尽量避免出错。在使用matlab的优化函数的时候，我们首先必须计算$\mathbb
-E({\theta}), {\nabla} \mathbb E({\theta})$,然后可以使用下面的代码来进行优化。&lt;/p&gt;
-&lt;p&gt;计算$\mathbb E({\theta}), {\nabla} \mathbb E({\theta})$ h来进行优化，代码格式如下所示：&lt;/p&gt;
+&lt;p&gt;对于快速构建机器学习算法，可以使用现成的[优化类库][3]，尽量避免出错。在使用matlab的优化函数的时候，我们首先必须计算$\mathbb E({\theta}), {\nabla} \mathbb E({\theta})$,然后可以使用下面的代码来进行优化。&lt;/p&gt;
+&lt;p&gt;计算$\mathbb E({\theta}), {\nabla} \mathbb E({\theta})$ 来进行优化，代码格式如下所示：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;def&lt;/span&gt; &lt;span class="nx"&gt;costFunction&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;X&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nx"&gt;t&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nx"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
     &lt;span class="nx"&gt;cost_val&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="cp"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;...code&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nx"&gt;compute&lt;/span&gt; &lt;span class="nx"&gt;E&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="nx"&gt;...&lt;/span&gt;&lt;span class="cp"&gt;]&lt;/span&gt;
-    &lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="nx"&gt;gradient&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="cp"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;...code&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nx"&gt;compute&lt;/span&gt; &lt;span class="nx"&gt;derivative&lt;/span&gt; &lt;span class="nx"&gt;of&lt;/span&gt; &lt;span class="nx"&gt;E&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="nx"&gt;...&lt;/span&gt;&lt;span class="cp"&gt;]&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;cost_val&lt;/span&gt;
+    &lt;span class="nx"&gt;gradient&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="cp"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;...code&lt;/span&gt; &lt;span class="k"&gt;to&lt;/span&gt; &lt;span class="nx"&gt;compute&lt;/span&gt; &lt;span class="nx"&gt;derivative&lt;/span&gt; &lt;span class="nx"&gt;of&lt;/span&gt; &lt;span class="nx"&gt;E&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="nx"&gt;...&lt;/span&gt;&lt;span class="cp"&gt;]&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;cost_val&lt;/span&gt;&lt;span class="err"&gt;，&lt;/span&gt;&lt;span class="nx"&gt;gradient&lt;/span&gt;
 
 &lt;span class="nx"&gt;options&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;maxiter&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="nx"&gt;maxiter&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;disp&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="nx"&gt;False&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
 &lt;span class="nx"&gt;costFunction&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;lambda&lt;/span&gt; &lt;span class="nx"&gt;theta&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;costFunction&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;X&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nx"&gt;t&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nx"&gt;theta&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="nx"&gt;initialTheta&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;zeros&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="cp"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;optTheta&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;functionVal&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;exitFlag&lt;/span&gt;&lt;span class="cp"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;minimize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;costFunction&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
                                             &lt;span class="nx"&gt;initialTheta&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
-                                            &lt;span class="nx"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;BFGS&amp;#39;&lt;/span&gt; &lt;span class="err"&gt;#&lt;/span&gt; &lt;span class="nx"&gt;or&lt;/span&gt; &lt;span class="nx"&gt;other&lt;/span&gt; &lt;span class="nx"&gt;methods&lt;/span&gt;
+                                            &lt;span class="nx"&gt;method&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;BFGS&amp;#39;&lt;/span&gt;
                                             &lt;span class="nx"&gt;options&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;h3&gt;多类LR模型&lt;/h3&gt;
 &lt;p&gt;基于以上讨论的二分类的logistic regression model，可以将LR模型进行扩展，用来处理多类问题。将logistic sigmoid
-function 变为softmax function，LR模型就可以处理都分类问题了，这个过程非常容易（有很多模型，将其扩展到多类问题是比较困难的，比如后面要
-提到的SVM）。在多类时候，目标随机变量符合类别分布(categorical distribution),这样似然函数就可以写成下面的形式：&lt;/p&gt;
+function 变为softmax function，LR模型就可以处理都分类问题了，这个过程非常容易（有很多模型，将其扩展到多类问题是比较困难的，比如后面要提到的SVM）。在多类时候，目标随机变量符合类别分布(categorical distribution),这样似然函数就可以写成下面的形式：&lt;/p&gt;
 &lt;p&gt;\begin{equation}\label{likelihood}
  p(\mathbf T|\mathbf X, \Theta) =
 \prod_{n=1}^{N}\prod_{k=1}^{K}(y_{n,k})^{t_{n,k}}
@@ -194,8 +191,7 @@ X^T(\mathbf{T}-\mathbf{Y})
 &lt;p&gt;由于海森矩阵的存储空间的复杂度为$O(D^2M^2)$，在处理高维数据和大数据时并不实用，例如一个商业的CRT预测系统的维度有几亿维，训练实例可能也有几亿个，则
 需要的存储可能为$8\times 10^{32}$字节，需要的存储太大。&lt;/p&gt;
 &lt;h3&gt;正则化LR模型&lt;/h3&gt;
-&lt;p&gt;如同在概率一章和线性回归模型中讨论的最大似然估计容易过拟合，尤其是在小样本的情况下。如果在正则化线性回归模型一样，可以通过正则化框架（regularizatio
-n framework）给LR模型添加一个正则化项，比如常用的$\ell_1$,$\ell_2$范数等，增强模型的泛化能力。如果使用$\ell_2$范数，对二分
+&lt;p&gt;如同在概率一章和线性回归模型中讨论的最大似然估计容易过拟合，尤其是在小样本的情况下。如果在正则化线性回归模型一样，可以通过正则化框架（regularization framework）给LR模型添加一个正则化项，比如常用的$\ell_1$,$\ell_2$范数等，增强模型的泛化能力。如果使用$\ell_2$范数，对二分
 类问题来说，目标函数可以写成下面的形式：&lt;/p&gt;
 &lt;p&gt;\begin{equation}\label{obj}
   J({\theta}) = arg\min_{\theta}\mathbb E({\theta})+\lambda \parallel {\theta}
@@ -224,7 +220,7 @@ n framework）给LR模型添加一个正则化项，比如常用的$\ell_1$,$\el
 
 &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LogisticRegression&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="sd"&gt;&amp;#39;&amp;#39;&amp;#39; implement a logistic regression for &lt;/span&gt;
-&lt;span class="sd"&gt;     binary classification and multiple classification&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="sd"&gt;     binary classification&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
 
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tol&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;1e-6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;maxiter&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;penalty&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;l2&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;inf&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__tol&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tol&lt;/span&gt;
@@ -325,7 +321,8 @@ n framework）给LR模型添加一个正则化项，比如常用的$\ell_1$,$\el
 &lt;p&gt;&lt;img alt="png" src="/images/d_5_1.png" /&gt;&lt;/p&gt;
 &lt;h3&gt;引用&lt;/h3&gt;
 &lt;p&gt;[1] Grinstead and Snell's Introduction to Probability, Peter G. Doyle, 2006.&lt;/p&gt;
-&lt;p&gt;[2] Machine Learning: a Probabilistic Perspective, Kevin Patrick Murphy,&lt;/p&gt;&lt;script type= "text/javascript"&gt;
+&lt;p&gt;[2] Machine Learning: a Probabilistic Perspective, Kevin Patrick Murphy.&lt;/p&gt;
+&lt;p&gt;[3] 在coursera的机器学习课程，Andrew Ng教授建议新手使用现成的优化函数，因为数值优化可能存在大量的技巧。&lt;/p&gt;&lt;script type= "text/javascript"&gt;
     if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
         var mathjaxscript = document.createElement('script');
         mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
